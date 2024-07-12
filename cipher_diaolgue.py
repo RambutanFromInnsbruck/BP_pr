@@ -32,9 +32,7 @@ class Cipher_window(Vars):
 
     # Grand Prix
     def grand(self):
-        self.parent.tab = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.parent.tab, text="grand")
-        self.parent.tabs_control.select(self.parent.tab)
+        self.draw_tab_w_btn(name="grand")
 
         self.parent.label_1 = Label(self.parent.tab, text="Number of words:")
         self.parent.entry_1 = Entry(self.parent.tab)
@@ -56,9 +54,7 @@ class Cipher_window(Vars):
         self.root.destroy()
 
     def caesar(self):
-        self.parent.tab = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.parent.tab, text="caesar")
-        self.parent.tabs_control.select(self.parent.tab)
+        self.draw_tab_w_btn(name="caesar")
 
         self.parent.label_1 = Label(self.parent.tab, text="Shift:")
         self.parent.entry_1 = Entry(self.parent.tab)
@@ -70,10 +66,22 @@ class Cipher_window(Vars):
 
         self.root.destroy()
 
+    def draw_tab_w_btn(self, name: str):
+        self.parent.tab = Frame(self.parent.tabs_control)
+        self.parent.tabs_control.add(self.parent.tab, text=name)
+        self.parent.tabs_control.select(self.parent.tab)
+        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
+                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
+        self.parent.btn_cls.pack(anchor='ne')
+
     # validation only numbers
     def validate_entry(self, P):
         pattern = re.compile('[0-9]+')
         return bool(pattern.match(P))
+
+    def validate_text(self, event):
+        pattern = re.compile('[A-Za-z \n]')
+        return bool(pattern.match(event.char))
 
     def check_number(self, event):
         number = self.parent.entry_1.get()
@@ -84,6 +92,7 @@ class Cipher_window(Vars):
             self.parent.label_2.pack()
             self.parent.text_1.pack()
             self.parent.button_1.pack()
+            # self.parent.text_1.configure(validate="key",validatecommand=(self.parent.register(self.validate_text), "%S"))
 
     def check_size(self):
         words = self.parent.text_1.get("1.0", "end-1c").upper().split()
@@ -111,9 +120,9 @@ class Cipher_window(Vars):
             self.parent.button_2.pack()
             self.parent.label_4.pack()
             self.parent.sctxt_2.pack()
-            self.creare_dict(words, num)
+            self.create_dict(words, num)
 
-    def creare_dict(self, w: list, n: int):
+    def create_dict(self, w: list, n: int):
         for i in range(n):
             for j in range(n):
                 self.vars.dict[str(w[i][j])].append(str(self.vars.base[i % n]) + str(self.vars.base[j % n]))
