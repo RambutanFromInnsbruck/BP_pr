@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Notebook
-from cipher_diaolgue import Cipher_window
+from cipher_diaolgue import CipherWindow
+
 
 class Window:
     def __init__(self):
@@ -39,7 +40,7 @@ class Window:
         self.root.tabs_control.pack(expand=1, fill='both')
 
     def dialogue_window(self):
-        Cipher_window(self.root)
+        CipherWindow(self.root)
 
     def help(self, *event):
         print("Help was clicked")
@@ -55,6 +56,7 @@ class Window:
 
     def _close(self, event):
         self.root.quit()
+
 
 if __name__ == "__main__":
     Window().run()

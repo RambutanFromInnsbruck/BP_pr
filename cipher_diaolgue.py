@@ -2,10 +2,12 @@ from tkinter import *
 from tkinter.ttk import Notebook
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
+import re
+import random
 from variables import Vars
-import re, random
 
-class Cipher_window(Vars):
+
+class CipherWindow(Vars):
     def __init__(self, parent):
         self.root = Toplevel(parent)
         self.parent = parent
@@ -114,7 +116,7 @@ class Cipher_window(Vars):
             self.parent.text_1.configure(state="normal")
             self.parent.button_1.configure(state="normal")
             access = False
-        if access == True:
+        if access:
             self.parent.label_3.pack()
             self.parent.sctxt_1.pack()
             self.parent.button_2.pack()
@@ -128,7 +130,7 @@ class Cipher_window(Vars):
                 self.vars.dict[str(w[i][j])].append(str(self.vars.base[i % n]) + str(self.vars.base[j % n]))
 
     def encode(self):
-        txt = re.sub(r'[^A-Z]','', self.parent.sctxt_1.get("1.0", "end-1c").upper())
+        txt = re.sub(r'[^A-Z]', '', self.parent.sctxt_1.get("1.0", "end-1c").upper())
 
         for i in range(len(txt)):
             try:
