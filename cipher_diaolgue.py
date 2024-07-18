@@ -24,7 +24,8 @@ class CipherWindow(Vars):
         self.search_entry = Entry(self.root)
         self.label = Label(self.root, text="Choose cipher:")
         self.choise = IntVar()
-        self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise, value=0, command=self.grand)
+        self.gp = GrandPrix(self.parent)
+        self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise, value=0, command=self.gp.grand)
         self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise, value=1, command=self.caesar)
 
         self.search_entry.pack()
@@ -32,14 +33,42 @@ class CipherWindow(Vars):
         self.radio_button_1.pack()
         self.radio_button_2.pack()
 
-    # Grand Prix
+    def caesar(self):
+        # self.draw_tab_w_btn(name="caesar")
+
+        self.parent.label_1 = Label(self.parent.tab, text="Shift:")
+        self.parent.entry_1 = Entry(self.parent.tab)
+        self.parent.label_2 = Label(self.parent.tab, text="Plaintext:")
+
+        self.parent.label_1.pack()
+        self.parent.entry_1.pack()
+        self.parent.label_2.pack()
+
+        self.root.destroy()
+
+    def validate_text(self, event):
+        pattern = re.compile('[A-Za-z \n]')
+        return bool(pattern.match(event.char))
+
+    def grab_focus(self):
+        self.root.grab_set()
+        self.root.focus_set()
+        self.root.wait_window()
+
+
+class GrandPrix(Vars):
+    def __init__(self, parent):
+        self.parent = parent
+        self.root = Toplevel(parent)
+        self.vars = Vars()
+
     def grand(self):
-        self.draw_tab_w_btn(name="grand")
+        self.draw_tab_w_cls_btn(name="grand")
 
         self.parent.label_1 = Label(self.parent.tab, text="Number of words:")
         self.parent.entry_1 = Entry(self.parent.tab)
         self.parent.label_2 = Label(self.parent.tab, text="List of words (Enter is separator):")
-        self.parent.text_1 = Text(self.parent.tab, width=30, height=10) # this widget needs to validate input
+        self.parent.text_1 = Text(self.parent.tab, width=30, height=10)  # this widget needs to validate input
         self.parent.button_1 = Button(self.parent.tab, text="Input", command=self.check_size)
         self.parent.label_3 = Label(self.parent.tab, text="Plain text:")
         self.parent.sctxt_1 = ScrolledText(self.parent.tab, width=30, height=10)
@@ -55,20 +84,7 @@ class CipherWindow(Vars):
 
         self.root.destroy()
 
-    def caesar(self):
-        self.draw_tab_w_btn(name="caesar")
-
-        self.parent.label_1 = Label(self.parent.tab, text="Shift:")
-        self.parent.entry_1 = Entry(self.parent.tab)
-        self.parent.label_2 = Label(self.parent.tab, text="Plaintext:")
-
-        self.parent.label_1.pack()
-        self.parent.entry_1.pack()
-        self.parent.label_2.pack()
-
-        self.root.destroy()
-
-    def draw_tab_w_btn(self, name: str):
+    def draw_tab_w_cls_btn(self, name: str):
         self.parent.tab = Frame(self.parent.tabs_control)
         self.parent.tabs_control.add(self.parent.tab, text=name)
         self.parent.tabs_control.select(self.parent.tab)
@@ -76,14 +92,9 @@ class CipherWindow(Vars):
                                      command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
         self.parent.btn_cls.pack(anchor='ne')
 
-    # validation only numbers
     def validate_entry(self, P):
         pattern = re.compile('[0-9]+')
         return bool(pattern.match(P))
-
-    def validate_text(self, event):
-        pattern = re.compile('[A-Za-z \n]')
-        return bool(pattern.match(event.char))
 
     def check_number(self, event):
         number = self.parent.entry_1.get()
@@ -94,7 +105,6 @@ class CipherWindow(Vars):
             self.parent.label_2.pack()
             self.parent.text_1.pack()
             self.parent.button_1.pack()
-            # self.parent.text_1.configure(validate="key",validatecommand=(self.parent.register(self.validate_text), "%S"))
 
     def check_size(self):
         words = self.parent.text_1.get("1.0", "end-1c").upper().split()
@@ -145,8 +155,3 @@ class CipherWindow(Vars):
                 break
 
         self.parent.sctxt_2.insert(INSERT, self.vars.cipher)
-
-    def grab_focus(self):
-        self.root.grab_set()
-        self.root.focus_set()
-        self.root.wait_window()
