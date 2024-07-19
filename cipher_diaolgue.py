@@ -25,27 +25,18 @@ class CipherWindow(Vars):
         self.label = Label(self.root, text="Choose cipher:")
         self.choise = IntVar()
         self.gp = GrandPrix(self.parent)
+        self.cs = Caesar(self.parent)
         self.gp.set_cipher_window(self)
-        self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise, value=0, command=self.gp.grand)
-        self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise, value=1, command=self.caesar)
+        self.cs.set_cipher_window(self)
+        self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
+                                          value=0, command=self.gp.grand)
+        self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
+                                          value=1, command=self.cs.caesar)
 
         self.search_entry.pack()
         self.label.pack()
         self.radio_button_1.pack()
         self.radio_button_2.pack()
-
-    def caesar(self):
-        # self.draw_tab_w_btn(name="caesar")
-
-        self.parent.label_1 = Label(self.parent.tab, text="Shift:")
-        self.parent.entry_1 = Entry(self.parent.tab)
-        self.parent.label_2 = Label(self.parent.tab, text="Plaintext:")
-
-        self.parent.label_1.pack()
-        self.parent.entry_1.pack()
-        self.parent.label_2.pack()
-
-        self.root.destroy()
 
     def validate_text(self, event):
         pattern = re.compile('[A-Za-z \n]')
@@ -60,7 +51,6 @@ class CipherWindow(Vars):
 class GrandPrix(Vars):
     def __init__(self, parent):
         self.parent = parent
-        # self.cipher_window = None
         self.vars = Vars()
 
     def set_cipher_window(self, cipher_window):
@@ -159,3 +149,32 @@ class GrandPrix(Vars):
                 break
 
         self.parent.sctxt_2.insert(INSERT, self.vars.cipher)
+
+
+class Caesar():
+    def __init__(self, parent):
+        self.parent = parent
+
+    def set_cipher_window(self, cipher_window):
+        self.cipher_window = cipher_window
+
+    def caesar(self):
+        self.draw_tab_w_cls_btn(name="caesar")
+
+        self.parent.label_1 = Label(self.parent.tab, text="Shift:")
+        self.parent.entry_1 = Entry(self.parent.tab)
+        self.parent.label_2 = Label(self.parent.tab, text="Plaintext:")
+
+        self.parent.label_1.pack()
+        self.parent.entry_1.pack()
+        self.parent.label_2.pack()
+
+        self.cipher_window.root.destroy()
+
+    def draw_tab_w_cls_btn(self, name: str):
+        self.parent.tab = Frame(self.parent.tabs_control)
+        self.parent.tabs_control.add(self.parent.tab, text=name)
+        self.parent.tabs_control.select(self.parent.tab)
+        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
+                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
+        self.parent.btn_cls.pack(anchor='ne')
