@@ -25,6 +25,7 @@ class CipherWindow(Vars):
         self.label = Label(self.root, text="Choose cipher:")
         self.choise = IntVar()
         self.gp = GrandPrix(self.parent)
+        self.gp.set_cipher_window(self)
         self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise, value=0, command=self.gp.grand)
         self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise, value=1, command=self.caesar)
 
@@ -59,8 +60,11 @@ class CipherWindow(Vars):
 class GrandPrix(Vars):
     def __init__(self, parent):
         self.parent = parent
-        self.root = Toplevel(parent)
+        # self.cipher_window = None
         self.vars = Vars()
+
+    def set_cipher_window(self, cipher_window):
+        self.cipher_window = cipher_window
 
     def grand(self):
         self.draw_tab_w_cls_btn(name="grand")
@@ -82,7 +86,7 @@ class GrandPrix(Vars):
         self.parent.entry_1.configure(validate="key", validatecommand=(self.parent.register(self.validate_entry), "%P"))
         self.parent.entry_1.bind('<Return>', self.check_number)
 
-        self.root.destroy()
+        self.cipher_window.root.destroy()
 
     def draw_tab_w_cls_btn(self, name: str):
         self.parent.tab = Frame(self.parent.tabs_control)
