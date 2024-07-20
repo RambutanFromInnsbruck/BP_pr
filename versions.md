@@ -28,5 +28,5 @@ Babylonian pandemonium is an application that allows to work with hidden data: c
 * [ ] Numbering of tabs with the same name
 * [x] Tabs closing button in window (for _v.0.0.3:_ add close button to tab)
 * [ ] Pop-up menu for left-clicking on text widget to save to file
-* [ ] Text widget input validation
+* [X] Text widget input validation
 * [ ] Caesar cipher window with full functionality

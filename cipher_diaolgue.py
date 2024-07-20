@@ -40,10 +40,6 @@ class CipherWindow():
         self.radio_button_1.pack()
         self.radio_button_2.pack()
 
-    def validate_text(self, event):
-        pattern = re.compile('[A-Za-z \n]')
-        return bool(pattern.match(event.char))
-
     def grab_focus(self):
         self.root.grab_set()
         self.root.focus_set()
@@ -94,12 +90,21 @@ class GrandPrix():
 
         self.parent.entry_1.configure(validate="key", validatecommand=(self.parent.register(self.validate_entry), "%P"))
         self.parent.entry_1.bind('<Return>', self.check_number)
+        self.parent.text_1.bind("<KeyPress>", self.validate_text)
 
         self.btab.cipher_window.root.destroy()
 
     def validate_entry(self, P):
         pattern = re.compile('[0-9]+')
         return bool(pattern.match(P))
+
+    def validate_text(self, event):
+        if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
+            return
+
+        if event.char:
+            if not re.match(r'[a-zA-Z \n]', event.char):
+                return "break"
 
     def check_number(self, event):
         number = self.parent.entry_1.get()
