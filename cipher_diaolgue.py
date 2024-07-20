@@ -7,7 +7,7 @@ import random
 from variables import Vars
 
 
-class CipherWindow(Vars):
+class CipherWindow():
     def __init__(self, parent):
         self.root = Toplevel(parent)
         self.parent = parent
@@ -48,16 +48,33 @@ class CipherWindow(Vars):
         self.root.wait_window()
 
 
-class GrandPrix(Vars):
+class BlankTab():
+    def __init__(self, parent):
+        self.parent = parent
+        
+    def set_cipher_window(self, cipher_window):
+        self.cipher_window = cipher_window
+        
+    def draw_tab_w_cls_btn(self, name: str):
+        self.parent.tab = Frame(self.parent.tabs_control)
+        self.parent.tabs_control.add(self.parent.tab, text=name)
+        self.parent.tabs_control.select(self.parent.tab)
+        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
+                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
+        self.parent.btn_cls.pack(anchor='ne')
+
+
+class GrandPrix():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
+        self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.cipher_window = cipher_window
+        self.btab.set_cipher_window(cipher_window)
 
     def grand(self):
-        self.draw_tab_w_cls_btn(name="grand")
+        self.btab.draw_tab_w_cls_btn(name="grand")
 
         self.parent.label_1 = Label(self.parent.tab, text="Number of words:")
         self.parent.entry_1 = Entry(self.parent.tab)
@@ -76,15 +93,7 @@ class GrandPrix(Vars):
         self.parent.entry_1.configure(validate="key", validatecommand=(self.parent.register(self.validate_entry), "%P"))
         self.parent.entry_1.bind('<Return>', self.check_number)
 
-        self.cipher_window.root.destroy()
-
-    def draw_tab_w_cls_btn(self, name: str):
-        self.parent.tab = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.parent.tab, text=name)
-        self.parent.tabs_control.select(self.parent.tab)
-        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
-                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
-        self.parent.btn_cls.pack(anchor='ne')
+        self.btab.cipher_window.root.destroy()
 
     def validate_entry(self, P):
         pattern = re.compile('[0-9]+')
@@ -154,12 +163,13 @@ class GrandPrix(Vars):
 class Caesar():
     def __init__(self, parent):
         self.parent = parent
+        self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.cipher_window = cipher_window
+        self.btab.set_cipher_window(cipher_window)
 
     def caesar(self):
-        self.draw_tab_w_cls_btn(name="caesar")
+        self.btab.draw_tab_w_cls_btn(name="caesar")
 
         self.parent.label_1 = Label(self.parent.tab, text="Shift:")
         self.parent.entry_1 = Entry(self.parent.tab)
@@ -169,12 +179,4 @@ class Caesar():
         self.parent.entry_1.pack()
         self.parent.label_2.pack()
 
-        self.cipher_window.root.destroy()
-
-    def draw_tab_w_cls_btn(self, name: str):
-        self.parent.tab = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.parent.tab, text=name)
-        self.parent.tabs_control.select(self.parent.tab)
-        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
-                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
-        self.parent.btn_cls.pack(anchor='ne')
+        self.btab.cipher_window.root.destroy()
