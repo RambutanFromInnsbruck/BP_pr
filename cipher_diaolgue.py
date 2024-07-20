@@ -24,12 +24,14 @@ class CipherWindow():
         self.search_entry = Entry(self.root)
         self.label = Label(self.root, text="Choose cipher:")
         self.choise = IntVar()
+
         self.gp = GrandPrix(self.parent)
-        self.cs = Caesar(self.parent)
         self.gp.set_cipher_window(self)
-        self.cs.set_cipher_window(self)
         self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
                                           value=0, command=self.gp.grand)
+
+        self.cs = Caesar(self.parent)
+        self.cs.set_cipher_window(self)
         self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
                                           value=1, command=self.cs.caesar)
 
