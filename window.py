@@ -30,8 +30,8 @@ class Window:
         main_menu.add_command(label="Help", command=self.help)
         tools_menu.add_cascade(label="Cryptography", menu=ciphers_menu)
         tools_menu.add_command(label="Steganography", command=self.func)
-        ciphers_menu.add_command(label="Encode", command=self.dialogue_window)
-        ciphers_menu.add_command(label="Decode", command=self.dialogue_window)
+        ciphers_menu.add_command(label="Encode", command=self.dialogue_encode_window)
+        ciphers_menu.add_command(label="Decode", command=self.dialogue_decode_window)
 
         self.root.configure(menu=main_menu)
 
@@ -39,7 +39,10 @@ class Window:
         self.root.tabs_control = Notebook(self.root)
         self.root.tabs_control.pack(expand=1, fill='both')
 
-    def dialogue_window(self):
+    def dialogue_encode_window(self):
+        CipherWindow(self.root)
+
+    def dialogue_decode_window(self):
         CipherWindow(self.root)
 
     def help(self, *event):
