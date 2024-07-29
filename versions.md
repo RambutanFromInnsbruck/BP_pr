@@ -7,26 +7,28 @@ Babylonian pandemonium is an application that allows to work with hidden data: c
 - Mathematical puzzle about remainders
 - Modified DNA cipher (parser for decode and encode)
 
-## _v.0.0.1_
+## _v.0.0.2_
 ## Features
 
 - Menu Ciphers with submenus Encode and Decode (same functionality)
-- Blank menu Stego
+- Blank menu Steganography and Help (call F1)
 - Creating a new tab when one of the Help menu Ciphers is invoked
 - Start window for Caesar cipher
 - Grand Prix cipher window with almost full functionality
   - Number of words input validation
-- Quit with Esc
+  - Text with words for dictionary input validation
+- Quit with Esc, Fullscreen with F11
+- Tabs closing button in window
 
 ## _v.0.0.2_
 ## Implementation plan
 
-* [x] Blank menu Help (add menu call F1)
-* [x] Fullscreen (call F11)
-* [x] Rename menu Ciphers to Cryptography
-* [x] Rename menu Stego to Steganography
-* [ ] Numbering of tabs with the same name
-* [x] Tabs closing button in window (for _v.0.0.3:_ add close button to tab)
-* [ ] Pop-up menu for left-clicking on text widget to save to file
-* [X] Text widget input validation
 * [ ] Caesar cipher window with full functionality
+
+## _v.0.0.3_
+## Implementation plan
+
+* [ ] Numbering of tabs with the same name
+* [ ] Pop-up menu for left-clicking on text widget to save to file
+* [ ] Add close button to tab
+
