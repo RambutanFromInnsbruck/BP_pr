@@ -4,7 +4,7 @@ from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
 import random
-from variables import Vars
+from variables import Vars, QUANTITY, START_CHAR
 
 
 class CipherWindow():
@@ -28,12 +28,12 @@ class CipherWindow():
         self.gp = GrandPrix(self.parent)
         self.gp.set_cipher_window(self)
         self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
-                                          value=0, command=self.gp.grand)
+                                           value=0, command=self.gp.grand)
 
         self.cs = Caesar(self.parent)
         self.cs.set_cipher_window(self)
         self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
-                                          value=1, command=self.cs.caesar)
+                                           value=1, command=self.cs.caesar)
 
         self.search_entry.pack()
         self.label.pack()
@@ -49,10 +49,10 @@ class CipherWindow():
 class BlankTab():
     def __init__(self, parent):
         self.parent = parent
-        
+
     def set_cipher_window(self, cipher_window):
         self.cipher_window = cipher_window
-        
+
     def draw_tab_w_cls_btn(self, name: str):
         self.parent.tab = Frame(self.parent.tabs_control)
         self.parent.tabs_control.add(self.parent.tab, text=name)
@@ -67,6 +67,7 @@ class BlankTab():
         if event.char:
             if not re.match(regex_pattern, event.char):
                 return "break"
+
 
 class GrandPrix():
     def __init__(self, parent):
@@ -164,6 +165,7 @@ class GrandPrix():
 class Caesar():
     def __init__(self, parent):
         self.parent = parent
+        self.vars = Vars()
         self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
@@ -199,4 +201,10 @@ class Caesar():
             self.parent.sctxt_cs_enc.pack()
 
     def encode(self):
-        pass
+        txt = re.sub(r'[^a-zA-Z]', '', self.parent.sctxt_cs_pln.get("1.0", "end-1c"))
+        shift = int(self.parent.entry_cs_shft.get())
+
+        for char in txt:
+            self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
+
+        self.parent.sctxt_cs_enc.insert(INSERT, self.vars.cipher)

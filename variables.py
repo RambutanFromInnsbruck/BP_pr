@@ -1,3 +1,7 @@
+START_CHAR = ord("!")
+LAST_CHAR = ord("~")
+QUANTITY = LAST_CHAR - START_CHAR + 1
+
 class Vars:
     def __init__(self):
         self.base = '0123456789abcdefghijklmnopqrstuvwxyz'
