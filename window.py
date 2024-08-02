@@ -29,7 +29,7 @@ class Window:
         main_menu.add_cascade(label="Tools", menu=tools_menu)
         main_menu.add_command(label="Help", command=self.help)
         tools_menu.add_cascade(label="Cryptography", menu=ciphers_menu)
-        tools_menu.add_command(label="Steganography", command=self.func)
+        tools_menu.add_command(label="Steganography", command=self.stego)
         ciphers_menu.add_command(label="Encode", command=self.dialogue_encode_window)
         ciphers_menu.add_command(label="Decode", command=self.dialogue_decode_window)
 
@@ -48,7 +48,7 @@ class Window:
     def help(self, *event):
         print("Help was clicked")
 
-    def func(self):
+    def stego(self):
         print("Stego was clicked")
 
     def fullscreen(self, event):

@@ -4,7 +4,7 @@ from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
 import random
-from variables import Vars, QUANTITY, START_CHAR
+from variables import Vars, QUANTITY, START_CHAR, BASE
 
 
 class CipherWindow():
@@ -28,12 +28,12 @@ class CipherWindow():
         self.gp = GrandPrix(self.parent)
         self.gp.set_cipher_window(self)
         self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
-                                           value=0, command=self.gp.grand)
+                                           value=0, command=self.gp.call_grand)
 
         self.cs = Caesar(self.parent)
         self.cs.set_cipher_window(self)
         self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
-                                           value=1, command=self.cs.caesar)
+                                           value=1, command=self.cs.call_caesar)
 
         self.search_entry.pack()
         self.label.pack()
@@ -78,7 +78,7 @@ class GrandPrix():
     def set_cipher_window(self, cipher_window):
         self.btab.set_cipher_window(cipher_window)
 
-    def grand(self):
+    def call_grand(self):
         self.btab.draw_tab_w_cls_btn(name="grand")
 
         self.parent.label_gp_nmbr = Label(self.parent.tab, text="Number of words:")
@@ -88,7 +88,7 @@ class GrandPrix():
         self.parent.button_gp_dict = Button(self.parent.tab, text="Input", command=self.check_size)
         self.parent.label_gp_pln = Label(self.parent.tab, text="Plain text:")
         self.parent.sctxt_gp_pln = ScrolledText(self.parent.tab, width=30, height=10)
-        self.parent.button_gp_enc = Button(self.parent.tab, text="Encode", command=self.encode)
+        self.parent.button_gp_enc = Button(self.parent.tab, text="Encode", command=self.encode_grand)
         self.parent.label_gp_enc = Label(self.parent.tab, text="Cipher text:")
         self.parent.sctxt_gp_enc = ScrolledText(self.parent.tab, width=30, height=10)
 
@@ -142,9 +142,10 @@ class GrandPrix():
     def create_dict(self, w: list, n: int):
         for i in range(n):
             for j in range(n):
-                self.vars.dict[str(w[i][j])].append(str(self.vars.base[i % n]) + str(self.vars.base[j % n]))
+                self.vars.dict[str(w[i][j])].append(str(BASE[i % n]) + str(BASE[j % n]))
 
-    def encode(self):
+    def encode_grand(self):
+        self.parent.sctxt_gp_enc.delete("1.0", "end")
         txt = re.sub(r'[^A-Z]', '', self.parent.sctxt_gp_pln.get("1.0", "end-1c").upper())
 
         for i in range(len(txt)):
@@ -160,6 +161,7 @@ class GrandPrix():
                 break
 
         self.parent.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
+        self.vars.cipher = ''
 
 
 class Caesar():
@@ -171,14 +173,15 @@ class Caesar():
     def set_cipher_window(self, cipher_window):
         self.btab.set_cipher_window(cipher_window)
 
-    def caesar(self):
+    def call_caesar(self):
         self.btab.draw_tab_w_cls_btn(name="caesar")
 
         self.parent.label_cs_shft = Label(self.parent.tab, text="Shift:")
         self.parent.entry_cs_shft = Entry(self.parent.tab)
         self.parent.label_cs_pln = Label(self.parent.tab, text="Plaintext:")
         self.parent.sctxt_cs_pln = ScrolledText(self.parent.tab, width=30, height=10)
-        self.parent.button_cs_enc = Button(self.parent.tab, text="Encode", command=self.encode)
+        self.parent.button_cs_enc = Button(self.parent.tab, text="Encode", command=self.encode_caesar)
+        self.parent.label_cs_enc = Label(self.parent.tab, text="Cipher text:")
         self.parent.sctxt_cs_enc = ScrolledText(self.parent.tab, width=30, height=10)
 
         self.parent.label_cs_shft.pack()
@@ -198,9 +201,11 @@ class Caesar():
             self.parent.label_cs_pln.pack()
             self.parent.sctxt_cs_pln.pack()
             self.parent.button_cs_enc.pack()
+            self.parent.label_cs_enc.pack()
             self.parent.sctxt_cs_enc.pack()
 
-    def encode(self):
+    def encode_caesar(self):
+        self.parent.sctxt_cs_enc.delete("1.0", "end")
         txt = re.sub(r'[^a-zA-Z]', '', self.parent.sctxt_cs_pln.get("1.0", "end-1c"))
         shift = int(self.parent.entry_cs_shft.get())
 
@@ -208,3 +213,4 @@ class Caesar():
             self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
 
         self.parent.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
+        self.vars.cipher = ''
