@@ -100,9 +100,9 @@ class GrandPrix():
 
         self.btab.cipher_window.root.destroy()
 
-    def check_number(self, event):
-        number = self.parent.entry_gp_nmbr.get()
-        if int(number) > 36 or int(number) < 2:
+    def check_number(self, *event):
+        number = int(self.parent.entry_gp_nmbr.get())
+        if number > 36 or number < 2:
             showerror("Warning!", "The number of words should be no more than 36 and no less than 2. Try again")
         else:
             self.parent.entry_gp_nmbr.configure(state="disabled")
@@ -172,14 +172,31 @@ class Caesar():
     def caesar(self):
         self.btab.draw_tab_w_cls_btn(name="caesar")
 
-        self.parent.label_1 = Label(self.parent.tab, text="Shift:")
-        self.parent.entry_1 = Entry(self.parent.tab)
-        self.parent.label_2 = Label(self.parent.tab, text="Plaintext:")
+        self.parent.label_cs_shft = Label(self.parent.tab, text="Shift:")
+        self.parent.entry_cs_shft = Entry(self.parent.tab)
+        self.parent.label_cs_pln = Label(self.parent.tab, text="Plaintext:")
+        self.parent.sctxt_cs_pln = ScrolledText(self.parent.tab, width=30, height=10)
+        self.parent.button_cs_enc = Button(self.parent.tab, text="Encode", command=self.encode)
+        self.parent.sctxt_cs_enc = ScrolledText(self.parent.tab, width=30, height=10)
 
-        self.parent.label_1.pack()
-        self.parent.entry_1.pack()
-        self.parent.label_2.pack()
+        self.parent.label_cs_shft.pack()
+        self.parent.entry_cs_shft.pack()
 
-        self.parent.entry_1.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.parent.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.parent.entry_cs_shft.bind('<Return>', self.check_shift)
 
         self.btab.cipher_window.root.destroy()
+
+    def check_shift(self, *event):
+        number = int(self.parent.entry_cs_shft.get())
+        if number < 1:
+            showerror("Warning!", "Shift should be at least 1. Try again")
+        else:
+            self.parent.entry_cs_shft.configure(state="disabled")
+            self.parent.label_cs_pln.pack()
+            self.parent.sctxt_cs_pln.pack()
+            self.parent.button_cs_enc.pack()
+            self.parent.sctxt_cs_enc.pack()
+
+    def encode(self):
+        pass
