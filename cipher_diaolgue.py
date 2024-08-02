@@ -27,18 +27,18 @@ class CipherWindow():
 
         self.gp = GrandPrix(self.parent)
         self.gp.set_cipher_window(self)
-        self.radio_button_1 = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
+        self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
                                           value=0, command=self.gp.grand)
 
         self.cs = Caesar(self.parent)
         self.cs.set_cipher_window(self)
-        self.radio_button_2 = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
+        self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
                                           value=1, command=self.cs.caesar)
 
         self.search_entry.pack()
         self.label.pack()
-        self.radio_button_1.pack()
-        self.radio_button_2.pack()
+        self.radio_button_gp.pack()
+        self.radio_button_cs.pack()
 
     def grab_focus(self):
         self.root.grab_set()
@@ -61,6 +61,12 @@ class BlankTab():
                                      command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
         self.parent.btn_cls.pack(anchor='ne')
 
+    def validate(self, event, regex_pattern):
+        if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
+            return
+        if event.char:
+            if not re.match(regex_pattern, event.char):
+                return "break"
 
 class GrandPrix():
     def __init__(self, parent):
@@ -74,74 +80,62 @@ class GrandPrix():
     def grand(self):
         self.btab.draw_tab_w_cls_btn(name="grand")
 
-        self.parent.label_1 = Label(self.parent.tab, text="Number of words:")
-        self.parent.entry_1 = Entry(self.parent.tab)
-        self.parent.label_2 = Label(self.parent.tab, text="List of words (Enter is separator):")
-        self.parent.text_1 = Text(self.parent.tab, width=30, height=10)  # this widget needs to validate input
-        self.parent.button_1 = Button(self.parent.tab, text="Input", command=self.check_size)
-        self.parent.label_3 = Label(self.parent.tab, text="Plain text:")
-        self.parent.sctxt_1 = ScrolledText(self.parent.tab, width=30, height=10)
-        self.parent.button_2 = Button(self.parent.tab, text="Encode", command=self.encode)
-        self.parent.label_4 = Label(self.parent.tab, text="Cipher text:")
-        self.parent.sctxt_2 = ScrolledText(self.parent.tab, width=30, height=10)
+        self.parent.label_gp_nmbr = Label(self.parent.tab, text="Number of words:")
+        self.parent.entry_gp_nmbr = Entry(self.parent.tab)
+        self.parent.label_gp_dict = Label(self.parent.tab, text="List of words (Enter & space are separators):")
+        self.parent.text_gp_dict = Text(self.parent.tab, width=30, height=10)
+        self.parent.button_gp_dict = Button(self.parent.tab, text="Input", command=self.check_size)
+        self.parent.label_gp_pln = Label(self.parent.tab, text="Plain text:")
+        self.parent.sctxt_gp_pln = ScrolledText(self.parent.tab, width=30, height=10)
+        self.parent.button_gp_enc = Button(self.parent.tab, text="Encode", command=self.encode)
+        self.parent.label_gp_enc = Label(self.parent.tab, text="Cipher text:")
+        self.parent.sctxt_gp_enc = ScrolledText(self.parent.tab, width=30, height=10)
 
-        self.parent.label_1.pack()
-        self.parent.entry_1.pack()
+        self.parent.label_gp_nmbr.pack()
+        self.parent.entry_gp_nmbr.pack()
 
-        self.parent.entry_1.configure(validate="key", validatecommand=(self.parent.register(self.validate_entry), "%P"))
-        self.parent.entry_1.bind('<Return>', self.check_number)
-        self.parent.text_1.bind("<KeyPress>", self.validate_text)
+        self.parent.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.parent.entry_gp_nmbr.bind('<Return>', self.check_number)
+        self.parent.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
 
         self.btab.cipher_window.root.destroy()
 
-    def validate_entry(self, P):
-        pattern = re.compile('[0-9]+')
-        return bool(pattern.match(P))
-
-    def validate_text(self, event):
-        if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
-            return
-
-        if event.char:
-            if not re.match(r'[a-zA-Z \n]', event.char):
-                return "break"
-
     def check_number(self, event):
-        number = self.parent.entry_1.get()
+        number = self.parent.entry_gp_nmbr.get()
         if int(number) > 36 or int(number) < 2:
             showerror("Warning!", "The number of words should be no more than 36 and no less than 2. Try again")
         else:
-            self.parent.entry_1.configure(state="disabled")
-            self.parent.label_2.pack()
-            self.parent.text_1.pack()
-            self.parent.button_1.pack()
+            self.parent.entry_gp_nmbr.configure(state="disabled")
+            self.parent.label_gp_dict.pack()
+            self.parent.text_gp_dict.pack()
+            self.parent.button_gp_dict.pack()
 
     def check_size(self):
-        words = self.parent.text_1.get("1.0", "end-1c").upper().split()
-        num = int(self.parent.entry_1.get())
+        words = self.parent.text_gp_dict.get("1.0", "end-1c").upper().split()
+        num = int(self.parent.entry_gp_nmbr.get())
         access = False
         for word in words:
             if num == len(word):
-                self.parent.text_1.configure(state="disabled")
-                self.parent.button_1.configure(state="disabled")
+                self.parent.text_gp_dict.configure(state="disabled")
+                self.parent.button_gp_dict.configure(state="disabled")
                 access = True
             else:
                 showerror("Warning!", f'The number of letters in the word must be exactly {num}. Try again')
-                self.parent.text_1.configure(state="normal")
-                self.parent.button_1.configure(state="normal")
+                self.parent.text_gp_dict.configure(state="normal")
+                self.parent.button_gp_dict.configure(state="normal")
                 access = False
                 break
         if num != len(words):
             showerror("Warning!", f'The number words must be exactly {num}. Try again')
-            self.parent.text_1.configure(state="normal")
-            self.parent.button_1.configure(state="normal")
+            self.parent.text_gp_dict.configure(state="normal")
+            self.parent.button_gp_dict.configure(state="normal")
             access = False
         if access:
-            self.parent.label_3.pack()
-            self.parent.sctxt_1.pack()
-            self.parent.button_2.pack()
-            self.parent.label_4.pack()
-            self.parent.sctxt_2.pack()
+            self.parent.label_gp_pln.pack()
+            self.parent.sctxt_gp_pln.pack()
+            self.parent.button_gp_enc.pack()
+            self.parent.label_gp_enc.pack()
+            self.parent.sctxt_gp_enc.pack()
             self.create_dict(words, num)
 
     def create_dict(self, w: list, n: int):
@@ -150,7 +144,7 @@ class GrandPrix():
                 self.vars.dict[str(w[i][j])].append(str(self.vars.base[i % n]) + str(self.vars.base[j % n]))
 
     def encode(self):
-        txt = re.sub(r'[^A-Z]', '', self.parent.sctxt_1.get("1.0", "end-1c").upper())
+        txt = re.sub(r'[^A-Z]', '', self.parent.sctxt_gp_pln.get("1.0", "end-1c").upper())
 
         for i in range(len(txt)):
             try:
@@ -164,7 +158,7 @@ class GrandPrix():
                 self.vars.cipher = ''
                 break
 
-        self.parent.sctxt_2.insert(INSERT, self.vars.cipher)
+        self.parent.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
 
 
 class Caesar():
@@ -185,5 +179,7 @@ class Caesar():
         self.parent.label_1.pack()
         self.parent.entry_1.pack()
         self.parent.label_2.pack()
+
+        self.parent.entry_1.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
 
         self.btab.cipher_window.root.destroy()
