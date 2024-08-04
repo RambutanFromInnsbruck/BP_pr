@@ -101,8 +101,10 @@ class GrandPrix():
         self.btab.cipher_window.root.destroy()
 
     def check_number(self, *event):
-        number = int(self.parent.entry_gp_nmbr.get())
-        if number > 36 or number < 2:
+        number = self.parent.entry_gp_nmbr.get()
+        if number == '':
+            showerror("Warning!", "Enter a non-empty value")
+        elif int(number) > 36 or int(number) < 2:
             showerror("Warning!", "The number of words should be no more than 36 and no less than 2. Try again")
         else:
             self.parent.entry_gp_nmbr.configure(state="disabled")
@@ -192,8 +194,10 @@ class Caesar():
         self.btab.cipher_window.root.destroy()
 
     def check_shift(self, *event):
-        number = int(self.parent.entry_cs_shft.get())
-        if number < 1:
+        number = self.parent.entry_cs_shft.get()
+        if number == '':
+            showerror("Warning!", "Enter a non-empty value")
+        elif int(number) < 1:
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
             self.parent.entry_cs_shft.configure(state="disabled")
