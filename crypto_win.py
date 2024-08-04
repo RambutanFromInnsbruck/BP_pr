@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter.ttk import Notebook
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re

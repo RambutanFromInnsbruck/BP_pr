@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.ttk import Notebook
-from cipher_diaolgue import CipherWindow
+from tkinter.messagebox import askokcancel
+from crypto_win import CipherWindow
 
 
 class Window:
@@ -58,7 +59,9 @@ class Window:
             self.root.attributes('-fullscreen', True)
 
     def _close(self, event):
-        self.root.quit()
+        choice = askokcancel("Quit", "Do you want to quit?")
+        if choice:
+            self.root.quit()
 
 
 if __name__ == "__main__":
