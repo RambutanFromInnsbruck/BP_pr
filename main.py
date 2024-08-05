@@ -1,7 +1,7 @@
 from tkinter import *
-from tkinter.ttk import Notebook
 from tkinter.messagebox import askokcancel
 from crypto_win import CipherWindow
+from custom_widgets import CustomNotebook
 
 
 class Window:
@@ -37,7 +37,7 @@ class Window:
         self.root.configure(menu=main_menu)
 
     def draw_widgets(self):
-        self.root.tabs_control = Notebook(self.root)
+        self.root.tabs_control = CustomNotebook(self.root)
         self.root.tabs_control.pack(expand=1, fill='both')
 
     def dialogue_encode_window(self):

@@ -26,7 +26,7 @@ Babylonian pandemonium is an application that allows to work with hidden data: c
 
 * [ ] Numbering of tabs with the same name (or naming in dialog window)
 * [ ] Pop-up menu for left-clicking on text widget to save to file
-* [ ] Add close button to tab
+* [x] Add close button to tab
 * [ ] Add ability to select modes to Caesar: alphabet and ASCII
 * [x] Messagebox for empty input of number of words/shift
 
