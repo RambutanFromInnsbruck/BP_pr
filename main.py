@@ -20,9 +20,9 @@ class Window:
     def run(self):
         self.draw_menu()
         self.draw_widgets()
+        self.root.protocol('WM_DELETE_WINDOW', self._close)
         self.root.mainloop()
 
-    # needs to draw help win
     def draw_menu(self):
         main_menu = Menu(self.root)
         tools_menu = Menu(main_menu, tearoff=0)
@@ -58,7 +58,7 @@ class Window:
         else:
             self.root.attributes('-fullscreen', True)
 
-    def _close(self, event):
+    def _close(self, *event):
         choice = askokcancel("Quit", "Do you want to quit?")
         if choice:
             self.root.quit()
