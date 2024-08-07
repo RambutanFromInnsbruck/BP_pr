@@ -182,7 +182,8 @@ class Caesar():
         self.parent.label_cs_pln = Label(self.parent.tab, text="Plaintext:")
         self.parent.sctxt_cs_pln = ScrolledText(self.parent.tab, width=30, height=10)
         self.parent.button_cs_enc = Button(self.parent.tab, text="Encode", command=self.encode_caesar)
-        self.parent.label_cs_enc = Label(self.parent.tab, text="Cipher text:")
+        self.parent.button_cs_dec = Button(self.parent.tab, text="Decode", command=self.decode_caesar)
+        self.parent.label_cs_enc = Label(self.parent.tab, text="Ciphertext:")
         self.parent.sctxt_cs_enc = ScrolledText(self.parent.tab, width=30, height=10)
 
         self.parent.label_cs_shft.pack()
@@ -201,11 +202,12 @@ class Caesar():
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
             self.parent.entry_cs_shft.configure(state="disabled")
-            self.parent.label_cs_pln.pack()
-            self.parent.sctxt_cs_pln.pack()
-            self.parent.button_cs_enc.pack()
-            self.parent.label_cs_enc.pack()
-            self.parent.sctxt_cs_enc.pack()
+            self.parent.label_cs_pln.place(x=155, y=80)
+            self.parent.sctxt_cs_pln.place(x=60, y=100)
+            self.parent.button_cs_enc.place(x=155, y=275)
+            self.parent.button_cs_dec.place(x=475, y=275)
+            self.parent.label_cs_enc.place(x=465, y=80)
+            self.parent.sctxt_cs_enc.place(x=380, y=100)
 
     def encode_caesar(self):
         self.parent.sctxt_cs_enc.delete("1.0", "end")
@@ -216,4 +218,15 @@ class Caesar():
             self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
 
         self.parent.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
+        self.vars.cipher = ''
+
+    def decode_caesar(self):
+        self.parent.sctxt_cs_pln.delete("1.0", "end")
+        txt = self.parent.sctxt_cs_enc.get("1.0", "end-1c")
+        shift = int(self.parent.entry_cs_shft.get())
+
+        for char in txt:
+            self.vars.cipher += chr(((ord(char) - shift - START_CHAR) % QUANTITY) + START_CHAR)
+
+        self.parent.sctxt_cs_pln.insert(INSERT, self.vars.cipher)
         self.vars.cipher = ''
