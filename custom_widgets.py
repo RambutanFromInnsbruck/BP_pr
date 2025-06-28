@@ -10,7 +10,7 @@ class CustomNotebook(ttk.Notebook):
     def __init__(self, *args, **kwargs):
         if not self.__initialized:
             self.__initialize_custom_style()
-            CustomNotebook.__inititialized = True
+            CustomNotebook.__initialized = True
 
         kwargs["style"] = "CustomNotebook"
         ttk.Notebook.__init__(self, *args, **kwargs)
@@ -50,24 +50,40 @@ class CustomNotebook(ttk.Notebook):
         self.state(["!pressed"])
         self._active = None
 
+    def _draw_x_on_image(self, img, color):
+        """Draw a thick X shape on a PhotoImage with the specified color"""
+
+        start = 4
+
+        for i in range(7):
+            # First diagonal (top-left to bottom-right) - main line
+            img.put(color, to=(start + i, start + i, start + i + 1, start + i + 1))
+            # First diagonal - thickness (parallel lines)
+            img.put(color, to=(start + i + 1, start + i, start + i + 2, start + i + 1))
+            # Second diagonal (top-right to bottom-left) - main line
+            img.put(color, to=(start + 7 - i, start + i, start + 8 - i, start + i + 1))
+            # Second diagonal - thickness (parallel lines)
+            img.put(color, to=(start + 6 - i, start + i, start + 7 - i, start + i + 1))
+
+    def _create_close_button_images(self):
+        """Create close button images programmatically"""
+        size = 16
+
+        # Create the three states with different colors
+        img_close = tk.PhotoImage("img_close", width=size, height=size)
+        self._draw_x_on_image(img_close, "#666666")  # Normal state - gray
+
+        img_closeactive = tk.PhotoImage("img_closeactive", width=size, height=size)
+        self._draw_x_on_image(img_closeactive, "#A19D37")  # Active state - yellow
+
+        img_closepressed = tk.PhotoImage("img_closepressed", width=size, height=size)
+        self._draw_x_on_image(img_closepressed, "#FF0000")  # Pressed state - red
+
+        return (img_close, img_closeactive, img_closepressed)
+
     def __initialize_custom_style(self):
         style = ttk.Style()
-        self.images = (
-            tk.PhotoImage("img_close", data='''
-                R0lGODlhCAAIAMIBAAAAADs7O4+Pj9nZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-                '''),
-            tk.PhotoImage("img_closeactive", data='''
-                R0lGODlhCAAIAMIEAAAAAP/SAP/bNNnZ2cbGxsbGxsbGxsbGxiH5BAEKAAQALAAA
-                AAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU5kEJADs=
-                '''),
-            tk.PhotoImage("img_closepressed", data='''
-                R0lGODlhCAAIAMIEAAAAAOUqKv9mZtnZ2Ts7Ozs7Ozs7Ozs7OyH+EUNyZWF0ZWQg
-                d2l0aCBHSU1QACH5BAEKAAQALAAAAAAIAAgAAAMVGDBEA0qNJyGw7AmxmuaZhWEU
-                5kEJADs=
-            ''')
-        )
+        self.images = self._create_close_button_images()
 
         style.element_create("close", "image", "img_close",
                              ("active", "pressed", "!disabled", "img_closepressed"),
