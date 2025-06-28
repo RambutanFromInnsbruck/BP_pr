@@ -49,10 +49,17 @@ class BlankTab():
     def __init__(self, parent):
         self.parent = parent
 
+        if not hasattr(parent, 'tab_counters'):
+            parent.tab_counters = {}
+
     def set_cipher_window(self, cipher_window):
         self.cipher_window = cipher_window
 
-    def draw_tab_w_cls_btn(self, name: str):
+    def draw_tab_w_cls_btn(self, tab_type: str):
+        if tab_type not in self.parent.tab_counters:
+            self.parent.tab_counters[tab_type] = 0
+        self.parent.tab_counters[tab_type] += 1
+        name = f"{tab_type} {self.parent.tab_counters[tab_type]}"
         self.parent.tab = Frame(self.parent.tabs_control)
         self.parent.tabs_control.add(self.parent.tab, text=name)
         self.parent.tabs_control.select(self.parent.tab)
@@ -78,7 +85,7 @@ class GrandPrix():
         self.btab.set_cipher_window(cipher_window)
 
     def call_grand(self):
-        self.btab.draw_tab_w_cls_btn(name="grand")
+        self.btab.draw_tab_w_cls_btn("grand")
 
         self.parent.label_gp_nmbr = Label(self.parent.tab, text="Number of words:")
         self.parent.entry_gp_nmbr = Entry(self.parent.tab)
@@ -175,7 +182,7 @@ class Caesar():
         self.btab.set_cipher_window(cipher_window)
 
     def call_caesar(self):
-        self.btab.draw_tab_w_cls_btn(name="caesar")
+        self.btab.draw_tab_w_cls_btn("caesar")
 
         self.parent.label_cs_shft = Label(self.parent.tab, text="Shift:")
         self.parent.entry_cs_shft = Entry(self.parent.tab)

@@ -21,7 +21,7 @@
 ## _v.0.0.3_
 ## Implementation plan
 
-* [ ] Numbering of tabs with the same name (or naming in dialog window)
+* [x] Numbering of tabs with the same name
 * [ ] Pop-up menu for left-clicking on text widget to save to file
 * [x] Add close button to tab
 * [ ] Add ability to select modes to Caesar: alphabet and ASCII
