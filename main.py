@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.messagebox import askokcancel
 from crypto_win import CipherWindow
 from custom_widgets import CustomNotebook
+from help_win import HelpWindow
 
 
 class Window:
@@ -47,7 +48,7 @@ class Window:
         CipherWindow(self.root)
 
     def help(self, *event):
-        print("Help was clicked")
+        HelpWindow(self.root)
 
     def stego(self):
         print("Stego was clicked")

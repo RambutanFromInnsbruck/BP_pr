@@ -4,26 +4,22 @@
 - Mathematical puzzle about remainders
 - Modified DNA cipher (parser for decode and encode)
 
-## _v.0.0.2_
+## _v.0.0.3_
 ## Features
 
 - Menu Ciphers with submenus Encode and Decode (same functionality for now)
-- Blank menu Steganography and Help (call F1)
-- Creating a new tab when one of the Help menu Ciphers is invoked
-- Start window for Caesar cipher
+- Window for Help (call F1)
+- Improved Ciphers tabs with closure and numbering
 - Grand Prix and Caesar ciphers window with almost full functionality
-  - Number of words/Shift input validation
+  - Number of words/Shift input validation (also for empty input)
   - Text with words for dictionary input validation
   - Re-encode plain text ability
-- Quit with Esc, Fullscreen with F11
-- Tabs closing button in window
 
-## _v.0.0.3_
+## _v.0.1.0_
 ## Implementation plan
 
-* [x] Numbering of tabs with the same name
+* [ ] Separate functionality to Encode and Decode
 * [ ] Pop-up menu for left-clicking on text widget to save to file
-* [x] Add close button to tab
 * [ ] Add ability to select modes to Caesar: alphabet and ASCII
-* [x] Messagebox for empty input of number of words/shift
+* [ ] Add information in window Help
 
