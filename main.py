@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter.messagebox import askokcancel
-from crypto_win import CipherWindow
+from dec_crypto_win import DecodeCipherWindow
+from enc_crypto_win import EncodeCipherWindow
 from custom_widgets import CustomNotebook
 from help_win import HelpWindow
 
@@ -42,10 +43,10 @@ class Window:
         self.root.tabs_control.pack(expand=1, fill='both')
 
     def dialogue_encode_window(self):
-        CipherWindow(self.root)
+        EncodeCipherWindow(self.root)
 
     def dialogue_decode_window(self):
-        CipherWindow(self.root)
+        DecodeCipherWindow(self.root)
 
     def help(self, *event):
         HelpWindow(self.root)

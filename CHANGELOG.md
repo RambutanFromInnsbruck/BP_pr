@@ -22,4 +22,6 @@
 * [ ] Pop-up menu for left-clicking on text widget to save to file
 * [ ] Add ability to select modes to Caesar: alphabet and ASCII
 * [ ] Add information in window Help
+* [ ] Add tab scrollbar when tabs go off screen
+* [x] BUGFIX: When opening multiple tabs with the same functionality, correct input occurs only in the last created one 
 

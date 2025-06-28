@@ -6,7 +6,7 @@ import random
 from variables import Vars, QUANTITY, START_CHAR, BASE
 
 
-class CipherWindow():
+class EncodeCipherWindow():
     def __init__(self, parent):
         self.root = Toplevel(parent)
         self.parent = parent
@@ -48,6 +48,7 @@ class CipherWindow():
 class BlankTab():
     def __init__(self, parent):
         self.parent = parent
+        self.tab_frame = None
 
         if not hasattr(parent, 'tab_counters'):
             parent.tab_counters = {}
@@ -60,12 +61,12 @@ class BlankTab():
             self.parent.tab_counters[tab_type] = 0
         self.parent.tab_counters[tab_type] += 1
         name = f"{tab_type} {self.parent.tab_counters[tab_type]}"
-        self.parent.tab = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.parent.tab, text=name)
-        self.parent.tabs_control.select(self.parent.tab)
-        self.parent.btn_cls = Button(self.parent.tab, width=2, height=1, relief=GROOVE, text="x",
+        self.tab_frame = Frame(self.parent.tabs_control)
+        self.parent.tabs_control.add(self.tab_frame, text=name)
+        self.parent.tabs_control.select(self.tab_frame)
+        self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x",
                                      command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
-        self.parent.btn_cls.pack(anchor='ne')
+        self.btn_cls.pack(anchor='ne')
 
     def validate(self, event, regex_pattern):
         if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
@@ -85,66 +86,66 @@ class GrandPrix():
         self.btab.set_cipher_window(cipher_window)
 
     def call_grand(self):
-        self.btab.draw_tab_w_cls_btn("grand")
+        self.btab.draw_tab_w_cls_btn("grand_enc")
 
-        self.parent.label_gp_nmbr = Label(self.parent.tab, text="Number of words:")
-        self.parent.entry_gp_nmbr = Entry(self.parent.tab)
-        self.parent.label_gp_dict = Label(self.parent.tab, text="List of words (Enter & space are separators):")
-        self.parent.text_gp_dict = Text(self.parent.tab, width=30, height=10)
-        self.parent.button_gp_dict = Button(self.parent.tab, text="Input", command=self.check_size)
-        self.parent.label_gp_pln = Label(self.parent.tab, text="Plain text:")
-        self.parent.sctxt_gp_pln = ScrolledText(self.parent.tab, width=30, height=10)
-        self.parent.button_gp_enc = Button(self.parent.tab, text="Encode", command=self.encode_grand)
-        self.parent.label_gp_enc = Label(self.parent.tab, text="Cipher text:")
-        self.parent.sctxt_gp_enc = ScrolledText(self.parent.tab, width=30, height=10)
+        self.label_gp_nmbr = Label(self.btab.tab_frame, text="Number of words:")
+        self.entry_gp_nmbr = Entry(self.btab.tab_frame)
+        self.label_gp_dict = Label(self.btab.tab_frame, text="List of words (Enter & space are separators):")
+        self.text_gp_dict = Text(self.btab.tab_frame, width=30, height=10)
+        self.button_gp_dict = Button(self.btab.tab_frame, text="Input", command=self.check_size)
+        self.label_gp_pln = Label(self.btab.tab_frame, text="Plain text:")
+        self.sctxt_gp_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.button_gp_enc = Button(self.btab.tab_frame, text="Encode", command=self.encode_grand)
+        self.label_gp_enc = Label(self.btab.tab_frame, text="Cipher text:")
+        self.sctxt_gp_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
-        self.parent.label_gp_nmbr.pack()
-        self.parent.entry_gp_nmbr.pack()
+        self.label_gp_nmbr.pack()
+        self.entry_gp_nmbr.pack()
 
-        self.parent.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
-        self.parent.entry_gp_nmbr.bind('<Return>', self.check_number)
-        self.parent.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
+        self.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.entry_gp_nmbr.bind('<Return>', self.check_number)
+        self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
 
         self.btab.cipher_window.root.destroy()
 
     def check_number(self, *event):
-        number = self.parent.entry_gp_nmbr.get()
+        number = self.entry_gp_nmbr.get()
         if number == '':
             showerror("Warning!", "Enter a non-empty value")
         elif int(number) > 36 or int(number) < 2:
             showerror("Warning!", "The number of words should be no more than 36 and no less than 2. Try again")
         else:
-            self.parent.entry_gp_nmbr.configure(state="disabled")
-            self.parent.label_gp_dict.pack()
-            self.parent.text_gp_dict.pack()
-            self.parent.button_gp_dict.pack()
+            self.entry_gp_nmbr.configure(state="disabled")
+            self.label_gp_dict.pack()
+            self.text_gp_dict.pack()
+            self.button_gp_dict.pack()
 
     def check_size(self):
-        words = self.parent.text_gp_dict.get("1.0", "end-1c").upper().split()
-        num = int(self.parent.entry_gp_nmbr.get())
+        words = self.text_gp_dict.get("1.0", "end-1c").upper().split()
+        num = int(self.entry_gp_nmbr.get())
         access = False
         for word in words:
             if num == len(word):
-                self.parent.text_gp_dict.configure(state="disabled")
-                self.parent.button_gp_dict.configure(state="disabled")
+                self.text_gp_dict.configure(state="disabled")
+                self.button_gp_dict.configure(state="disabled")
                 access = True
             else:
                 showerror("Warning!", f'The number of letters in the word must be exactly {num}. Try again')
-                self.parent.text_gp_dict.configure(state="normal")
-                self.parent.button_gp_dict.configure(state="normal")
+                self.text_gp_dict.configure(state="normal")
+                self.button_gp_dict.configure(state="normal")
                 access = False
                 break
         if num != len(words):
             showerror("Warning!", f'The number words must be exactly {num}. Try again')
-            self.parent.text_gp_dict.configure(state="normal")
-            self.parent.button_gp_dict.configure(state="normal")
+            self.text_gp_dict.configure(state="normal")
+            self.button_gp_dict.configure(state="normal")
             access = False
         if access:
-            self.parent.label_gp_pln.pack()
-            self.parent.sctxt_gp_pln.pack()
-            self.parent.button_gp_enc.pack()
-            self.parent.label_gp_enc.pack()
-            self.parent.sctxt_gp_enc.pack()
+            self.label_gp_pln.pack()
+            self.sctxt_gp_pln.pack()
+            self.button_gp_enc.pack()
+            self.label_gp_enc.pack()
+            self.sctxt_gp_enc.pack()
             self.create_dict(words, num)
 
     def create_dict(self, w: list, n: int):
@@ -153,8 +154,8 @@ class GrandPrix():
                 self.vars.dict[str(w[i][j])].append(str(BASE[i % n]) + str(BASE[j % n]))
 
     def encode_grand(self):
-        self.parent.sctxt_gp_enc.delete("1.0", "end")
-        txt = re.sub(r'[^A-Z]', '', self.parent.sctxt_gp_pln.get("1.0", "end-1c").upper())
+        self.sctxt_gp_enc.delete("1.0", "end")
+        txt = re.sub(r'[^A-Z]', '', self.sctxt_gp_pln.get("1.0", "end-1c").upper())
 
         for i in range(len(txt)):
             try:
@@ -168,7 +169,7 @@ class GrandPrix():
                 self.vars.cipher = ''
                 break
 
-        self.parent.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
+        self.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
         self.vars.cipher = ''
 
 
@@ -182,45 +183,45 @@ class Caesar():
         self.btab.set_cipher_window(cipher_window)
 
     def call_caesar(self):
-        self.btab.draw_tab_w_cls_btn("caesar")
+        self.btab.draw_tab_w_cls_btn("caesar_enc")
 
-        self.parent.label_cs_shft = Label(self.parent.tab, text="Shift:")
-        self.parent.entry_cs_shft = Entry(self.parent.tab)
-        self.parent.label_cs_pln = Label(self.parent.tab, text="Plaintext:")
-        self.parent.sctxt_cs_pln = ScrolledText(self.parent.tab, width=30, height=10)
-        self.parent.button_cs_enc = Button(self.parent.tab, text="Encode", command=self.encode_caesar)
-        self.parent.label_cs_enc = Label(self.parent.tab, text="Cipher text:")
-        self.parent.sctxt_cs_enc = ScrolledText(self.parent.tab, width=30, height=10)
+        self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
+        self.entry_cs_shft = Entry(self.btab.tab_frame)
+        self.label_cs_pln = Label(self.btab.tab_frame, text="Plaintext:")
+        self.sctxt_cs_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.button_cs_enc = Button(self.btab.tab_frame, text="Encode", command=self.encode_caesar)
+        self.label_cs_enc = Label(self.btab.tab_frame, text="Cipher text:")
+        self.sctxt_cs_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
-        self.parent.label_cs_shft.pack()
-        self.parent.entry_cs_shft.pack()
+        self.label_cs_shft.pack()
+        self.entry_cs_shft.pack()
 
-        self.parent.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
-        self.parent.entry_cs_shft.bind('<Return>', self.check_shift)
+        self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.entry_cs_shft.bind('<Return>', self.check_shift)
 
         self.btab.cipher_window.root.destroy()
 
     def check_shift(self, *event):
-        number = self.parent.entry_cs_shft.get()
+        number = self.entry_cs_shft.get()
         if number == '':
             showerror("Warning!", "Enter a non-empty value")
         elif int(number) < 1:
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
-            self.parent.entry_cs_shft.configure(state="disabled")
-            self.parent.label_cs_pln.pack()
-            self.parent.sctxt_cs_pln.pack()
-            self.parent.button_cs_enc.pack()
-            self.parent.label_cs_enc.pack()
-            self.parent.sctxt_cs_enc.pack()
+            self.entry_cs_shft.configure(state="disabled")
+            self.label_cs_pln.pack()
+            self.sctxt_cs_pln.pack()
+            self.button_cs_enc.pack()
+            self.label_cs_enc.pack()
+            self.sctxt_cs_enc.pack()
 
     def encode_caesar(self):
-        self.parent.sctxt_cs_enc.delete("1.0", "end")
-        txt = re.sub(r'[^a-zA-Z]', '', self.parent.sctxt_cs_pln.get("1.0", "end-1c"))
-        shift = int(self.parent.entry_cs_shft.get())
+        self.sctxt_cs_enc.delete("1.0", "end")
+        txt = re.sub(r'[^a-zA-Z]', '', self.sctxt_cs_pln.get("1.0", "end-1c"))
+        shift = int(self.entry_cs_shft.get())
 
         for char in txt:
             self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
 
-        self.parent.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
+        self.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
         self.vars.cipher = ''
