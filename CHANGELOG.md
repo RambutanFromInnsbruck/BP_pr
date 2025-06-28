@@ -1,6 +1,3 @@
-# Babylonian pandemonium
-Babylonian pandemonium is an application that allows to work with hidden data: ciphers, metadata, stegonograms, etc. It's possible to encode and decode data.
-
 ## Ideas for implementation:
 - Grand Prix cipher for grids from 2x2 to 36x36
 - Caesar cipher with shift by ASCII table (symbols 33-126) and by alphabet
