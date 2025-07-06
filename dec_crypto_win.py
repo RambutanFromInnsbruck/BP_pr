@@ -3,33 +3,22 @@ from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
 import random
-from variables import Vars, QUANTITY, START_CHAR, BASE
+from enc_crypto_win import EncodeCipherWindow, BlankTab
+from variables import *
 
 
-class DecodeCipherWindow():
-    def __init__(self, parent):
-        self.root = Toplevel(parent)
-        self.parent = parent
-        self.vars = Vars()
-        self.init()
-
-    def init(self):
-        self.root.title("Dialogue")
-        self.root.geometry("300x400")
-        self.draw_widgets()
-        self.grab_focus()
-
+class DecodeCipherWindow(EncodeCipherWindow):
     def draw_widgets(self):
         self.search_entry = Entry(self.root)
-        self.label = Label(self.root, text="Choose cipher:")
+        self.label = Label(self.root, text="Choose result:")
         self.choise = IntVar()
 
-        self.gp = GrandPrix(self.parent)
+        self.gp = GrandPrixDec(self.parent)
         self.gp.set_cipher_window(self)
         self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
                                            value=0, command=self.gp.call_grand)
 
-        self.cs = Caesar(self.parent)
+        self.cs = CaesarDec(self.parent)
         self.cs.set_cipher_window(self)
         self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
                                            value=1, command=self.cs.call_caesar)
@@ -39,44 +28,8 @@ class DecodeCipherWindow():
         self.radio_button_gp.pack()
         self.radio_button_cs.pack()
 
-    def grab_focus(self):
-        self.root.grab_set()
-        self.root.focus_set()
-        self.root.wait_window()
 
-
-class BlankTab():
-    def __init__(self, parent):
-        self.parent = parent
-        self.tab_frame = None
-
-        if not hasattr(parent, 'tab_counters'):
-            parent.tab_counters = {}
-
-    def set_cipher_window(self, cipher_window):
-        self.cipher_window = cipher_window
-
-    def draw_tab_w_cls_btn(self, tab_type: str):
-        if tab_type not in self.parent.tab_counters:
-            self.parent.tab_counters[tab_type] = 0
-        self.parent.tab_counters[tab_type] += 1
-        name = f"{tab_type} {self.parent.tab_counters[tab_type]}"
-        self.tab_frame = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.tab_frame, text=name)
-        self.parent.tabs_control.select(self.tab_frame)
-        self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x",
-                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
-        self.btn_cls.pack(anchor='ne')
-
-    def validate(self, event, regex_pattern):
-        if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
-            return
-        if event.char:
-            if not re.match(regex_pattern, event.char):
-                return "break"
-
-
-class GrandPrix():
+class GrandPrixDec():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
@@ -93,11 +46,11 @@ class GrandPrix():
         self.label_gp_dict = Label(self.btab.tab_frame, text="List of words (Enter & space are separators):")
         self.text_gp_dict = Text(self.btab.tab_frame, width=30, height=10)
         self.button_gp_dict = Button(self.btab.tab_frame, text="Input", command=self.check_size)
+        self.label_gp_enc = Label(self.btab.tab_frame, text="Cipher text (Enter & space are separators):")
+        self.sctxt_gp_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.button_gp_dec = Button(self.btab.tab_frame, text="Decode", command=self.decode_grand)
         self.label_gp_pln = Label(self.btab.tab_frame, text="Plain text:")
         self.sctxt_gp_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
-        self.button_gp_enc = Button(self.btab.tab_frame, text="Encode", command=self.encode_grand)
-        self.label_gp_enc = Label(self.btab.tab_frame, text="Cipher text:")
-        self.sctxt_gp_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
         self.label_gp_nmbr.pack()
         self.entry_gp_nmbr.pack()
@@ -141,11 +94,11 @@ class GrandPrix():
             self.button_gp_dict.configure(state="normal")
             access = False
         if access:
-            self.label_gp_pln.pack()
-            self.sctxt_gp_pln.pack()
-            self.button_gp_enc.pack()
             self.label_gp_enc.pack()
             self.sctxt_gp_enc.pack()
+            self.button_gp_dec.pack()
+            self.label_gp_pln.pack()
+            self.sctxt_gp_pln.pack()
             self.create_dict(words, num)
 
     def create_dict(self, w: list, n: int):
@@ -153,27 +106,33 @@ class GrandPrix():
             for j in range(n):
                 self.vars.dict[str(w[i][j])].append(str(BASE[i % n]) + str(BASE[j % n]))
 
-    def encode_grand(self):
-        self.sctxt_gp_enc.delete("1.0", "end")
-        txt = re.sub(r'[^A-Z]', '', self.sctxt_gp_pln.get("1.0", "end-1c").upper())
+    def decode_grand(self):
+        self.sctxt_gp_pln.delete("1.0", "end")
+        txt = re.sub(r'[^a-z0-9 \n\t]', '', self.sctxt_gp_enc.get("1.0", "end-1c").lower())
 
-        for i in range(len(txt)):
+        parts = txt.split()
+        rev_dict = {}
+        result = []
+
+        for key, values in self.vars.dict.items():
+            for value in values:
+                if value not in rev_dict:
+                    rev_dict[value] = key
+
+        for part in parts:
             try:
-                self.vars.cipher += random.choice(self.vars.dict[txt[i]])
-                if (i + 1) % 16 == 0:
-                    self.vars.cipher += '\n'
-                else:
-                    self.vars.cipher += '\t'
+                result.append(rev_dict[part])
             except:
-                showerror("Warning!", f'Letter {txt[i]} is not in the dictionary. Try again')
-                self.vars.cipher = ''
+                showerror("Warning!", f'Address {part} is not in the dictionary. Try again')
+                result = []
                 break
 
-        self.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
-        self.vars.cipher = ''
+        self.vars.result = self.vars.result.join(result)
+        self.sctxt_gp_pln.insert(INSERT, self.vars.result)
+        self.vars.result = ''
 
 
-class Caesar():
+class CaesarDec():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
@@ -187,11 +146,11 @@ class Caesar():
 
         self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
         self.entry_cs_shft = Entry(self.btab.tab_frame)
-        self.label_cs_pln = Label(self.btab.tab_frame, text="Cipher text:")
-        self.sctxt_cs_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
-        self.button_cs_enc = Button(self.btab.tab_frame, text="Decode", command=self.encode_caesar)
-        self.label_cs_enc = Label(self.btab.tab_frame, text="Plaintext:")
+        self.label_cs_enc = Label(self.btab.tab_frame, text="Cipher text:")
         self.sctxt_cs_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.button_cs_dec = Button(self.btab.tab_frame, text="Decode", command=self.decode_caesar)
+        self.label_cs_pln = Label(self.btab.tab_frame, text="Plaintext:")
+        self.sctxt_cs_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
         self.label_cs_shft.pack()
         self.entry_cs_shft.pack()
@@ -209,19 +168,19 @@ class Caesar():
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
             self.entry_cs_shft.configure(state="disabled")
-            self.label_cs_pln.pack()
-            self.sctxt_cs_pln.pack()
-            self.button_cs_enc.pack()
             self.label_cs_enc.pack()
             self.sctxt_cs_enc.pack()
+            self.button_cs_dec.pack()
+            self.label_cs_pln.pack()
+            self.sctxt_cs_pln.pack()
 
-    def encode_caesar(self):
-        self.sctxt_cs_enc.delete("1.0", "end")
-        txt = re.sub(r'[^a-zA-Z]', '', self.sctxt_cs_pln.get("1.0", "end-1c"))
+    def decode_caesar(self):
+        self.sctxt_cs_pln.delete("1.0", "end")
+        txt = self.sctxt_cs_enc.get("1.0", "end-1c")
         shift = int(self.entry_cs_shft.get())
 
         for char in txt:
-            self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
+            self.vars.result += chr(((ord(char) - shift - START_CHAR) % QUANTITY) + START_CHAR)
 
-        self.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
-        self.vars.cipher = ''
+        self.sctxt_cs_pln.insert(INSERT, self.vars.result)
+        self.vars.result = ''

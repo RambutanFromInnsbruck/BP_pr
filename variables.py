@@ -5,7 +5,7 @@ QUANTITY = LAST_CHAR - START_CHAR + 1
 
 class Vars:
     def __init__(self):
-        self.cipher = ''
+        self.result = ''
         self.dict = {
             'A': [],
             'B': [],

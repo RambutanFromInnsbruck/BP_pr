@@ -3,7 +3,7 @@ from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
 import random
-from variables import Vars, QUANTITY, START_CHAR, BASE
+from variables import *
 
 
 class EncodeCipherWindow():
@@ -21,15 +21,15 @@ class EncodeCipherWindow():
 
     def draw_widgets(self):
         self.search_entry = Entry(self.root)
-        self.label = Label(self.root, text="Choose cipher:")
+        self.label = Label(self.root, text="Choose result:")
         self.choise = IntVar()
 
-        self.gp = GrandPrix(self.parent)
+        self.gp = GrandPrixEnc(self.parent)
         self.gp.set_cipher_window(self)
         self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
                                            value=0, command=self.gp.call_grand)
 
-        self.cs = Caesar(self.parent)
+        self.cs = CaesarEnc(self.parent)
         self.cs.set_cipher_window(self)
         self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
                                            value=1, command=self.cs.call_caesar)
@@ -76,7 +76,7 @@ class BlankTab():
                 return "break"
 
 
-class GrandPrix():
+class GrandPrixEnc():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
@@ -159,21 +159,21 @@ class GrandPrix():
 
         for i in range(len(txt)):
             try:
-                self.vars.cipher += random.choice(self.vars.dict[txt[i]])
+                self.vars.result += random.choice(self.vars.dict[txt[i]])
                 if (i + 1) % 16 == 0:
-                    self.vars.cipher += '\n'
+                    self.vars.result += '\n'
                 else:
-                    self.vars.cipher += '\t'
+                    self.vars.result += '\t'
             except:
                 showerror("Warning!", f'Letter {txt[i]} is not in the dictionary. Try again')
-                self.vars.cipher = ''
+                self.vars.result = ''
                 break
 
-        self.sctxt_gp_enc.insert(INSERT, self.vars.cipher)
-        self.vars.cipher = ''
+        self.sctxt_gp_enc.insert(INSERT, self.vars.result)
+        self.vars.result = ''
 
 
-class Caesar():
+class CaesarEnc():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
@@ -221,7 +221,7 @@ class Caesar():
         shift = int(self.entry_cs_shft.get())
 
         for char in txt:
-            self.vars.cipher += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
+            self.vars.result += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
 
-        self.sctxt_cs_enc.insert(INSERT, self.vars.cipher)
-        self.vars.cipher = ''
+        self.sctxt_cs_enc.insert(INSERT, self.vars.result)
+        self.vars.result = ''
