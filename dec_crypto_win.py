@@ -2,8 +2,8 @@ from tkinter import *
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
-import random
-from enc_crypto_win import EncodeCipherWindow, BlankTab
+from custom_widgets import BlankTab
+from enc_crypto_win import EncodeCipherWindow
 from variables import *
 
 
@@ -36,7 +36,7 @@ class GrandPrixDec():
         self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.btab.set_cipher_window(cipher_window)
+        self.btab.set_riddle_window(cipher_window)
 
     def call_grand(self):
         self.btab.draw_tab_w_cls_btn("grand_dec")
@@ -59,7 +59,7 @@ class GrandPrixDec():
         self.entry_gp_nmbr.bind('<Return>', self.check_number)
         self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
 
-        self.btab.cipher_window.root.destroy()
+        self.btab.riddle_window.root.destroy()
 
     def check_number(self, *event):
         number = self.entry_gp_nmbr.get()
@@ -139,7 +139,7 @@ class CaesarDec():
         self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.btab.set_cipher_window(cipher_window)
+        self.btab.set_riddle_window(cipher_window)
 
     def call_caesar(self):
         self.btab.draw_tab_w_cls_btn("caesar_dec")
@@ -158,7 +158,7 @@ class CaesarDec():
         self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
 
-        self.btab.cipher_window.root.destroy()
+        self.btab.riddle_window.root.destroy()
 
     def check_shift(self, *event):
         number = self.entry_cs_shft.get()

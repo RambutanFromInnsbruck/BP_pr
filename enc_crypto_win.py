@@ -1,8 +1,9 @@
+import re
+import random
 from tkinter import *
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
-import re
-import random
+from custom_widgets import BlankTab
 from variables import *
 
 
@@ -45,45 +46,14 @@ class EncodeCipherWindow():
         self.root.wait_window()
 
 
-class BlankTab():
-    def __init__(self, parent):
-        self.parent = parent
-        self.tab_frame = None
-
-        if not hasattr(parent, 'tab_counters'):
-            parent.tab_counters = {}
-
-    def set_cipher_window(self, cipher_window):
-        self.cipher_window = cipher_window
-
-    def draw_tab_w_cls_btn(self, tab_type: str):
-        if tab_type not in self.parent.tab_counters:
-            self.parent.tab_counters[tab_type] = 0
-        self.parent.tab_counters[tab_type] += 1
-        name = f"{tab_type} {self.parent.tab_counters[tab_type]}"
-        self.tab_frame = Frame(self.parent.tabs_control)
-        self.parent.tabs_control.add(self.tab_frame, text=name)
-        self.parent.tabs_control.select(self.tab_frame)
-        self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x",
-                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
-        self.btn_cls.pack(anchor='ne')
-
-    def validate(self, event, regex_pattern):
-        if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):
-            return
-        if event.char:
-            if not re.match(regex_pattern, event.char):
-                return "break"
-
-
 class GrandPrixEnc():
     def __init__(self, parent):
         self.parent = parent
         self.vars = Vars()
         self.btab = BlankTab(parent)
 
-    def set_cipher_window(self, cipher_window):
-        self.btab.set_cipher_window(cipher_window)
+    def set_cipher_window(self, cypher_window):
+        self.btab.set_riddle_window(cypher_window)
 
     def call_grand(self):
         self.btab.draw_tab_w_cls_btn("grand_enc")
@@ -106,7 +76,7 @@ class GrandPrixEnc():
         self.entry_gp_nmbr.bind('<Return>', self.check_number)
         self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
 
-        self.btab.cipher_window.root.destroy()
+        self.btab.riddle_window.root.destroy()
 
     def check_number(self, *event):
         number = self.entry_gp_nmbr.get()
@@ -180,7 +150,7 @@ class CaesarEnc():
         self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.btab.set_cipher_window(cipher_window)
+        self.btab.set_riddle_window(cipher_window)
 
     def call_caesar(self):
         self.btab.draw_tab_w_cls_btn("caesar_enc")
@@ -199,7 +169,7 @@ class CaesarEnc():
         self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
 
-        self.btab.cipher_window.root.destroy()
+        self.btab.riddle_window.root.destroy()
 
     def check_shift(self, *event):
         number = self.entry_cs_shft.get()
