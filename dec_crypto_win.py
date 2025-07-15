@@ -2,31 +2,9 @@ from tkinter import *
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
 import re
-from custom_widgets import BlankTab
-from enc_crypto_win import EncodeCipherWindow
+from tab_templates import BlankTab
+from window_templates import DialogueWindow
 from variables import *
-
-
-class DecodeCipherWindow(EncodeCipherWindow):
-    def draw_widgets(self):
-        self.search_entry = Entry(self.root)
-        self.label = Label(self.root, text="Choose result:")
-        self.choise = IntVar()
-
-        self.gp = GrandPrixDec(self.parent)
-        self.gp.set_cipher_window(self)
-        self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
-                                           value=0, command=self.gp.call_grand)
-
-        self.cs = CaesarDec(self.parent)
-        self.cs.set_cipher_window(self)
-        self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
-                                           value=1, command=self.cs.call_caesar)
-
-        self.search_entry.pack()
-        self.label.pack()
-        self.radio_button_gp.pack()
-        self.radio_button_cs.pack()
 
 
 class GrandPrixDec():
@@ -38,7 +16,7 @@ class GrandPrixDec():
     def set_cipher_window(self, cipher_window):
         self.btab.set_riddle_window(cipher_window)
 
-    def call_grand(self):
+    def execute(self):
         self.btab.draw_tab_w_cls_btn("grand_dec")
 
         self.label_gp_nmbr = Label(self.btab.tab_frame, text="Number of words:")
@@ -141,7 +119,7 @@ class CaesarDec():
     def set_cipher_window(self, cipher_window):
         self.btab.set_riddle_window(cipher_window)
 
-    def call_caesar(self):
+    def execute(self):
         self.btab.draw_tab_w_cls_btn("caesar_dec")
 
         self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
@@ -184,3 +162,13 @@ class CaesarDec():
 
         self.sctxt_cs_pln.insert(INSERT, self.vars.result)
         self.vars.result = ''
+
+
+class DecodeCipherWindow(DialogueWindow):
+    CIPHER_TYPES = [
+        (GrandPrixDec, "Grand Prix Cipher"),
+        (CaesarDec, "Caesar Cipher")
+    ]
+
+    def __init__(self, parent):
+        super().__init__(parent, "Decode Dialogue")

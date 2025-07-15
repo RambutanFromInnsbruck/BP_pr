@@ -3,47 +3,9 @@ import random
 from tkinter import *
 from tkinter.messagebox import showerror
 from tkinter.scrolledtext import ScrolledText
-from custom_widgets import BlankTab
+from tab_templates import BlankTab
+from window_templates import DialogueWindow
 from variables import *
-
-
-class EncodeCipherWindow():
-    def __init__(self, parent):
-        self.root = Toplevel(parent)
-        self.parent = parent
-        self.vars = Vars()
-        self.init()
-
-    def init(self):
-        self.root.title("Dialogue")
-        self.root.geometry("300x400")
-        self.draw_widgets()
-        self.grab_focus()
-
-    def draw_widgets(self):
-        self.search_entry = Entry(self.root)
-        self.label = Label(self.root, text="Choose result:")
-        self.choise = IntVar()
-
-        self.gp = GrandPrixEnc(self.parent)
-        self.gp.set_cipher_window(self)
-        self.radio_button_gp = Radiobutton(self.root, text="Grand Prix Cipher", variable=self.choise,
-                                           value=0, command=self.gp.call_grand)
-
-        self.cs = CaesarEnc(self.parent)
-        self.cs.set_cipher_window(self)
-        self.radio_button_cs = Radiobutton(self.root, text="Caesar Cipher", variable=self.choise,
-                                           value=1, command=self.cs.call_caesar)
-
-        self.search_entry.pack()
-        self.label.pack()
-        self.radio_button_gp.pack()
-        self.radio_button_cs.pack()
-
-    def grab_focus(self):
-        self.root.grab_set()
-        self.root.focus_set()
-        self.root.wait_window()
 
 
 class GrandPrixEnc():
@@ -55,7 +17,7 @@ class GrandPrixEnc():
     def set_cipher_window(self, cypher_window):
         self.btab.set_riddle_window(cypher_window)
 
-    def call_grand(self):
+    def execute(self):
         self.btab.draw_tab_w_cls_btn("grand_enc")
 
         self.label_gp_nmbr = Label(self.btab.tab_frame, text="Number of words:")
@@ -152,7 +114,7 @@ class CaesarEnc():
     def set_cipher_window(self, cipher_window):
         self.btab.set_riddle_window(cipher_window)
 
-    def call_caesar(self):
+    def execute(self):
         self.btab.draw_tab_w_cls_btn("caesar_enc")
 
         self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
@@ -195,3 +157,13 @@ class CaesarEnc():
 
         self.sctxt_cs_enc.insert(INSERT, self.vars.result)
         self.vars.result = ''
+
+class EncodeCipherWindow(DialogueWindow):
+
+    CIPHER_TYPES = [
+        (GrandPrixEnc, "Grand Prix Cipher"),
+        (CaesarEnc, "Caesar Cipher")
+    ]
+
+    def __init__(self, parent):
+        super().__init__(parent, "Encode Dialogue")
