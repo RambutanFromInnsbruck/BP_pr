@@ -23,5 +23,6 @@
 * [ ] Add ability to select modes to Caesar: alphabet and ASCII
 * [ ] Add information in window Help
 * [ ] Add tab scrollbar when tabs go off screen
-* [x] BUGFIX: When opening multiple tabs with the same functionality, correct input occurs only in the last created one 
+* [x] BUGFIX: When opening multiple tabs with the same functionality, correct input occurs only in the last created one
+* [x] BUGFIX: When clicking the cross on a tab and releasing the mouse elsewhere, the cross begin to light up red instead of yellow when hovering
 

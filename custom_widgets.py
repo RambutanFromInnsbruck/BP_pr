@@ -22,31 +22,23 @@ class CustomNotebook(ttk.Notebook):
 
     def on_close_press(self, event):
         """Called when the button is pressed over the close button"""
-
         element = self.identify(event.x, event.y)
-
         if "close" in element:
-            index = self.index("@%d,%d" % (event.x, event.y))
+            index = self.index(f"@{event.x},{event.y}")
             self.state(['pressed'])
             self._active = index
             return "break"
 
     def on_close_release(self, event):
         """Called when the button is released"""
-        if not self.instate(['pressed']):
+        if not self.instate(['pressed']) or self._active is None:
+            self.state(["!pressed"])
+            self._active = None
             return
 
-        element = self.identify(event.x, event.y)
-        if "close" not in element:
-            # user moved the mouse off of the close button
-            return
-
-        index = self.index("@%d,%d" % (event.x, event.y))
-
-        if self._active == index:
-            self.forget(index)
-            self.event_generate("<<NotebookTabClosed>>")
-
+        # Close the tab regardless of cursor position
+        self.forget(self._active)
+        self.event_generate("<<NotebookTabClosed>>")
         self.state(["!pressed"])
         self._active = None
 
