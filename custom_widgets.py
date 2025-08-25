@@ -163,3 +163,132 @@ class AutocompleteEntry(tk.Entry):
             self.autocomplete(-1)  # cycle to previous hit
         if len(event.keysym) == 1:
             self.autocomplete()
+
+
+class ToggleButton(ttk.Frame):
+    """New ttk ToggleButton class"""
+    def __init__(self, parent, width=50, height=30, *args, **kwargs):
+        super().__init__(parent, *args, **kwargs)
+        self.width = width
+        self.height = height
+        self.state = False
+
+        self.canvas = tk.Canvas(
+            self,
+            width=width,
+            height=height,
+            highlightthickness=0,
+            relief='flat',
+            bg=self["style"] if "style" in kwargs else '#f0f0f0'
+        )
+        self.canvas.pack()
+
+        self.padding = 3
+        self.radius = (height - 2 * self.padding) // 2
+        self.track_height = height - 2 * self.padding
+        self.slider_pos = self.padding + self.radius
+
+        self.on_color = "#d92b18"
+        self.off_color = "#2e39d9"
+        self.slider_color = "#ffffff"
+
+        self.draw_track()
+        self.draw_slider()
+
+        self.canvas.bind("<Button-1>", self.toggle)
+        self.bind("<Button-1>", self.toggle)
+
+    def draw_track(self):
+        self.canvas.delete("track")
+        self.bg_color = self.on_color if self.state else self.off_color
+
+        track_x1 = self.padding
+        track_y1 = (self.height - self.track_height) / 2
+        track_x2 = self.width - self.padding
+        track_y2 = track_y1 + self.track_height
+
+        self.canvas.create_arc(
+            track_x1,
+            track_y1,
+            track_x1 + self.track_height,
+            track_y2,
+            start=90,
+            extent=180,
+            fill=self.bg_color,
+            outline=self.bg_color,
+            width=1,
+            tags="track"
+        )
+        self.canvas.create_arc(
+            track_x2 - self.track_height,
+            track_y1,
+            track_x2,
+            track_y2,
+            start=270,
+            extent=180,
+            fill=self.bg_color,
+            outline=self.bg_color,
+            width=1,
+            tags="track"
+        )
+        self.canvas.create_rectangle(
+            track_x1 + self.track_height / 2,
+            track_y1,
+            track_x2 - self.track_height / 2,
+            track_y2,
+            fill=self.bg_color,
+            outline=self.bg_color,
+            width=1,
+            tags="track"
+        )
+
+    def draw_slider(self):
+        self.canvas.delete("slider")
+        self.canvas.create_oval(
+            self.slider_pos - self.radius,
+            self.padding,
+            self.slider_pos + self.radius,
+            self.height - self.padding,
+            fill=self.slider_color,
+            outline=self.slider_color,
+            width=1,
+            tags="slider"
+        )
+
+    def toggle(self, event=None):
+        """Switching state with animation"""
+        self.state = not self.state
+
+        if self.state:
+            new_pos = self.width - self.padding - self.radius
+        else:
+            new_pos = self.padding + self.radius
+
+        self.draw_track()
+        self.animate_slider(self.slider_pos, new_pos)
+        self.slider_pos = new_pos
+
+        if hasattr(self, "command"):
+            self.command()
+
+    def animate_slider(self, start, end):
+        steps = 15
+        step_size = (end - start) / steps
+
+        def move(step):
+            nonlocal start
+            if (step_size > 0 and start < end) or (step_size < 0 and start > end):
+                start += step_size
+                self.slider_pos = start
+                self.draw_slider()
+                self.after(20, move, step + 1)
+
+        move(1)
+
+    def set_command(self, command):
+        """Setting up a callback function"""
+        self.command = command
+
+    def get_state(self):
+        """Returns the current state"""
+        return self.state

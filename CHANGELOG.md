@@ -20,7 +20,7 @@
 
 * [x] Separate functionality to Encode and Decode
 * [ ] Pop-up menu for left-clicking on text widget to save to file
-* [ ] Add ability to select modes to Caesar: alphabet and ASCII
+* [x] Add ability to select modes to Caesar: alphabet and ASCII
 * [ ] Add information in window Help
 * [ ] Add tab scrollbar when tabs go off screen
 * [x] Add autocomplete entry in choice window

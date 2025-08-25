@@ -6,6 +6,7 @@ from tkinter.scrolledtext import ScrolledText
 from tab_templates import BlankTab
 from window_templates import DialogueWindow
 from variables import *
+from custom_widgets import ToggleButton
 
 
 class GrandPrixEnc():
@@ -119,14 +120,18 @@ class CaesarEnc():
 
         self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
         self.entry_cs_shft = Entry(self.btab.tab_frame)
+        self.toggle_btn = ToggleButton(self.btab.tab_frame, width=40, height=25)
+        self.toggle_label = Label(self.btab.tab_frame, text="Alphabet")
         self.label_cs_pln = Label(self.btab.tab_frame, text="Plaintext:")
         self.sctxt_cs_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
         self.button_cs_enc = Button(self.btab.tab_frame, text="Encode", command=self.encode_caesar)
         self.label_cs_enc = Label(self.btab.tab_frame, text="Cipher text:")
         self.sctxt_cs_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
-        self.label_cs_shft.pack()
-        self.entry_cs_shft.pack()
+        self.label_cs_shft.place(x=295, y=27)
+        self.entry_cs_shft.place(x=250, y=50)
+
+        self.toggle_btn.set_command(self.on_toggle)
 
         self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
@@ -141,19 +146,40 @@ class CaesarEnc():
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
             self.entry_cs_shft.configure(state="disabled")
-            self.label_cs_pln.pack()
-            self.sctxt_cs_pln.pack()
-            self.button_cs_enc.pack()
-            self.label_cs_enc.pack()
-            self.sctxt_cs_enc.pack()
+            self.toggle_btn.place(x=420, y=47)
+            self.toggle_label.place(x=465, y=48)
+            self.label_cs_pln.place(x=170, y=100)
+            self.sctxt_cs_pln.place(x=75, y=123)
+            self.button_cs_enc.place(x=310, y=305)
+            self.label_cs_enc.place(x=440, y=100)
+            self.sctxt_cs_enc.place(x=350, y=123)
+
+    def on_toggle(self):
+        self.state = "ASCII" if self.toggle_btn.get_state() else "Alphabet"
+        self.toggle_label.config(text=f"{self.state}")
 
     def encode_caesar(self):
         self.sctxt_cs_enc.delete("1.0", "end")
-        txt = re.sub(r'[^a-zA-Z]', '', self.sctxt_cs_pln.get("1.0", "end-1c"))
+        txt = self.sctxt_cs_pln.get("1.0", "end-1c")
         shift = int(self.entry_cs_shft.get())
 
-        for char in txt:
-            self.vars.result += chr(((ord(char) + shift - START_CHAR) % QUANTITY) + START_CHAR)
+        if self.toggle_btn.get_state():  # ASCII
+            for char in txt:
+                if START_CHAR_ASCII <= ord(char) <= LAST_CHAR_ASCII:
+                    self.vars.result += chr(
+                        ((ord(char) + shift - START_CHAR_ASCII) % QUANTITY_ASCII) + START_CHAR_ASCII)
+                else:
+                    self.vars.result += char
+        else: # Alphabet
+            for char in txt:
+                if START_CHAR_ALPH_CAP <= ord(char) <= LAST_CHAR_ALPH_CAP:
+                    self.vars.result += chr(
+                        ((ord(char) + shift - START_CHAR_ALPH_CAP) % QUANTITY_ALPH_CAP) + START_CHAR_ALPH_CAP)
+                elif START_CHAR_ALPH_SMALL <= ord(char) <= LAST_CHAR_ALPH_SMALL:
+                    self.vars.result += chr(
+                        ((ord(char) + shift - START_CHAR_ALPH_SMALL) % QUANTITY_ALPH_SMALL) + START_CHAR_ALPH_SMALL)
+                else:
+                    self.vars.result += char
 
         self.sctxt_cs_enc.insert(INSERT, self.vars.result)
         self.vars.result = ''
