@@ -17,41 +17,38 @@ class HelpWindow():
 
     def draw_widgets(self):
         main_frame = Frame(self.root)
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-
         srch_frame = Frame(main_frame)
-        srch_frame.pack(fill=tk.X, pady=5)
-
-        Label(srch_frame, text="Search:").pack(side=tk.LEFT)
+        self.srch_label = Label(srch_frame, text="Search:")
         self.srch_entry = Entry(srch_frame, width=40)
-        self.srch_entry.pack(side=tk.LEFT, padx=5)
-        self.srch_entry.bind("<KeyRelease>", self.search_content)
-
         paned_window = PanedWindow(main_frame, orient=tk.HORIZONTAL)
-        paned_window.pack(fill=tk.BOTH, expand=True)
-
         self.tree_frame = Frame(paned_window)
         self.tree = ttk.Treeview(self.tree_frame, show="tree")
         self.tree_scroll = Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=self.tree_scroll.set)
-
-        self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-
         self.content_frame = Frame(paned_window)
         self.content_text = Text(self.content_frame, wrap="word", state="disabled")
         content_scroll = Scrollbar(self.content_frame, command=self.content_text.yview)
-        self.content_text.configure(yscrollcommand=content_scroll.set)
 
+        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        srch_frame.pack(fill=tk.X, pady=5)
+        self.srch_label.pack(side=tk.LEFT)
+        self.srch_entry.pack(side=tk.LEFT, padx=5)
+        paned_window.pack(fill=tk.BOTH, expand=True)
+        self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         content_scroll.pack(side=tk.RIGHT, fill=tk.Y)
         self.content_text.pack(fill=tk.BOTH, expand=True)
+
+        self.srch_entry.bind("<KeyRelease>", self.search_content)
+        self.tree.bind("<<TreeviewSelect>>", self.display_content)
+
+        self.tree.configure(yscrollcommand=self.tree_scroll.set)
+        self.content_text.configure(yscrollcommand=content_scroll.set)
 
         paned_window.add(self.tree_frame, width=200)
         paned_window.add(self.content_frame)
 
         self.help_data = self.load_help_data()
         self.create_help_structure()
-        self.tree.bind("<<TreeviewSelect>>", self.display_content)
 
     def load_help_data(self):
         filename = "help_data.json"
@@ -71,12 +68,12 @@ class HelpWindow():
                 values=[node["content"]],
                 open=False
             )
-
             if node["children"]:
                 self._build_tree(item_id, node["children"])
 
     def display_content(self, event):
         selected = self.tree.focus()
+
         if not selected:
             return
 
@@ -99,7 +96,7 @@ class HelpWindow():
 
         start_index = "1.0"
         while True:
-            start_index = self.content_text.search(query, start_index, stopindex=tk.END)
+            start_index = self.content_text.search(query, start_index, stopindex=tk.END, nocase=True)
             if not start_index:
                 break
 

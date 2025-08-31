@@ -173,10 +173,10 @@ class CaesarEnc():
                     self.vars.result += char
         else: # Alphabet
             for char in txt:
-                if START_CHAR_ALPH_CAP <= ord(char) <= LAST_CHAR_ALPH_CAP:
+                if char.isupper():
                     self.vars.result += chr(
                         ((ord(char) + shift - START_CHAR_ALPH_CAP) % QUANTITY_ALPH_CAP) + START_CHAR_ALPH_CAP)
-                elif START_CHAR_ALPH_SMALL <= ord(char) <= LAST_CHAR_ALPH_SMALL:
+                elif char.islower():
                     self.vars.result += chr(
                         ((ord(char) + shift - START_CHAR_ALPH_SMALL) % QUANTITY_ALPH_SMALL) + START_CHAR_ALPH_SMALL)
                 else:
