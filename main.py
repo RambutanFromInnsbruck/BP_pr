@@ -29,12 +29,15 @@ class Window:
         main_menu = Menu(self.root)
         tools_menu = Menu(main_menu, tearoff=0)
         ciphers_menu = Menu(main_menu, tearoff=0)
+        stego_menu = Menu(main_menu, tearoff=0)
         main_menu.add_cascade(label="Tools", menu=tools_menu)
         main_menu.add_command(label="Help", command=self.help)
         tools_menu.add_cascade(label="Cryptography", menu=ciphers_menu)
-        tools_menu.add_command(label="Steganography", command=self.stego)
-        ciphers_menu.add_command(label="Encode", command=self.dialogue_encode_window)
-        ciphers_menu.add_command(label="Decode", command=self.dialogue_decode_window)
+        tools_menu.add_cascade(label="Steganography", menu=stego_menu)
+        ciphers_menu.add_command(label="Encode", command=self.dialogue_cryptoencode_window)
+        ciphers_menu.add_command(label="Decode", command=self.dialogue_cryptodecode_window)
+        stego_menu.add_command(label="Encode", command=self.dialogue_stegoencode_window)
+        stego_menu.add_command(label="Decode", command=self.dialogue_stegodecode_window)
 
         self.root.configure(menu=main_menu)
 
@@ -42,17 +45,20 @@ class Window:
         self.root.tabs_control = CustomNotebook(self.root)
         self.root.tabs_control.pack(expand=1, fill='both')
 
-    def dialogue_encode_window(self):
+    def dialogue_cryptoencode_window(self):
         EncodeCipherWindow(self.root)
 
-    def dialogue_decode_window(self):
+    def dialogue_cryptodecode_window(self):
         DecodeCipherWindow(self.root)
+
+    def dialogue_stegoencode_window(self):
+        print("Stego was clicked")
+
+    def dialogue_stegodecode_window(self):
+        print("Stego was clicked")
 
     def help(self, *event):
         HelpWindow(self.root)
-
-    def stego(self):
-        print("Stego was clicked")
 
     def fullscreen(self, event):
         if self.root.attributes('-fullscreen'):
