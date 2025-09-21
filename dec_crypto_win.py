@@ -8,35 +8,28 @@ from variables import *
 from custom_widgets import ToggleButton
 
 
-class GrandPrixDec():
+class GrandPrixDec(BlankTab):
     def __init__(self, parent):
-        self.parent = parent
+        super().__init__(parent)
         self.vars = Vars()
-        self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.btab.set_riddle_window(cipher_window)
+        self.set_riddle_window(cipher_window)
 
     def execute(self):
-        self.btab.draw_tab_w_cls_btn("grand_dec")
+        self.draw_tab_w_cls_btn("grand_dec")
 
-        self.button_gp_rerun = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="«",
-                                      font=("Arial", 11), command=self.rerun)
-        self.button_gp_undo = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="‹",
-                                     font=("Arial", 11), command=self.undo)
-        self.label_gp_nmbr = Label(self.btab.tab_frame, text="Number of words:")
-        self.entry_gp_nmbr = Entry(self.btab.tab_frame)
-        self.label_gp_dict = Label(self.btab.tab_frame, text="List of words (Enter & space are separators):")
-        self.text_gp_dict = Text(self.btab.tab_frame, width=30, height=10)
-        self.button_gp_dict = Button(self.btab.tab_frame, text="Input", command=self.check_size)
-        self.label_gp_enc = Label(self.btab.tab_frame, text="Cipher text (Enter & space are separators):")
-        self.sctxt_gp_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
-        self.button_gp_dec = Button(self.btab.tab_frame, text="Decode", command=self.decode_grand)
-        self.label_gp_pln = Label(self.btab.tab_frame, text="Plain text:")
-        self.sctxt_gp_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.label_gp_nmbr = Label(self.tab_frame, text="Number of words:")
+        self.entry_gp_nmbr = Entry(self.tab_frame)
+        self.label_gp_dict = Label(self.tab_frame, text="List of words (Enter & space are separators):")
+        self.text_gp_dict = Text(self.tab_frame, width=30, height=10)
+        self.button_gp_dict = Button(self.tab_frame, text="Input", command=self.check_size)
+        self.label_gp_enc = Label(self.tab_frame, text="Cipher text (Enter & space are separators):")
+        self.sctxt_gp_enc = ScrolledText(self.tab_frame, width=30, height=10)
+        self.button_gp_dec = Button(self.tab_frame, text="Decode", command=self.decode_grand)
+        self.label_gp_pln = Label(self.tab_frame, text="Plain text:")
+        self.sctxt_gp_pln = ScrolledText(self.tab_frame, width=30, height=10)
 
-        self.button_gp_rerun.place(x=0, y=0)
-        self.button_gp_undo.place(x=27, y=0)
         self.label_gp_nmbr.place(x=200, y=27)
         self.entry_gp_nmbr.place(x=190, y=50)
         self.label_gp_dict.place(x=335, y=27)
@@ -48,16 +41,16 @@ class GrandPrixDec():
         self.label_gp_pln.place(x=445, y=250)
         self.sctxt_gp_pln.place(x=350, y=273)
 
-        self.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.validate(e, r'[0-9]+'))
         self.entry_gp_nmbr.bind('<Return>', self.check_number)
-        self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n\t]'))
-        self.sctxt_gp_enc.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-z0-9 \n\t]'))
+        self.text_gp_dict.bind("<KeyPress>", lambda e: self.validate(e, r'[a-zA-Z \n\t]'))
+        self.sctxt_gp_enc.bind("<KeyPress>", lambda e: self.validate(e, r'[a-z0-9 \n\t]'))
 
         self.button_gp_dict.configure(state="disabled")
         self.button_gp_dec.configure(state="disabled")
         self.sctxt_gp_pln.configure(state="disabled")
 
-        self.btab.riddle_window.root.destroy()
+        self.riddle_window.root.destroy()
 
     def check_number(self, *event):
         number = self.entry_gp_nmbr.get()
@@ -153,34 +146,27 @@ class GrandPrixDec():
             self.sctxt_gp_pln.configure(state="disabled")
 
 
-class CaesarDec():
+class CaesarDec(BlankTab):
     def __init__(self, parent):
-        self.parent = parent
+        super().__init__(parent)
         self.vars = Vars()
-        self.btab = BlankTab(parent)
 
     def set_cipher_window(self, cipher_window):
-        self.btab.set_riddle_window(cipher_window)
+        self.set_riddle_window(cipher_window)
 
     def execute(self):
-        self.btab.draw_tab_w_cls_btn("caesar_dec")
+        self.draw_tab_w_cls_btn("caesar_dec")
 
-        self.button_cs_rerun = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="«",
-                                      font=("Arial", 11), command=self.rerun)
-        self.button_cs_undo = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="‹",
-                                     font=("Arial", 11), command=self.undo)
-        self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
-        self.entry_cs_shft = Entry(self.btab.tab_frame)
-        self.toggle_btn = ToggleButton(self.btab.tab_frame, width=40, height=25)
-        self.toggle_label = Label(self.btab.tab_frame, text="Alphabet")
-        self.label_cs_enc = Label(self.btab.tab_frame, text="Cipher text:")
-        self.sctxt_cs_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
-        self.button_cs_dec = Button(self.btab.tab_frame, text="Decode", command=self.decode_caesar)
-        self.label_cs_pln = Label(self.btab.tab_frame, text="Plaintext:")
-        self.sctxt_cs_pln = ScrolledText(self.btab.tab_frame, width=30, height=10)
+        self.label_cs_shft = Label(self.tab_frame, text="Shift:")
+        self.entry_cs_shft = Entry(self.tab_frame)
+        self.toggle_btn = ToggleButton(self.tab_frame, width=40, height=25)
+        self.toggle_label = Label(self.tab_frame, text="Alphabet")
+        self.label_cs_enc = Label(self.tab_frame, text="Cipher text:")
+        self.sctxt_cs_enc = ScrolledText(self.tab_frame, width=30, height=10)
+        self.button_cs_dec = Button(self.tab_frame, text="Decode", command=self.decode_caesar)
+        self.label_cs_pln = Label(self.tab_frame, text="Plaintext:")
+        self.sctxt_cs_pln = ScrolledText(self.tab_frame, width=30, height=10)
 
-        self.button_cs_rerun.place(x=0, y=0)
-        self.button_cs_undo.place(x=27, y=0)
         self.label_cs_shft.place(x=295, y=27)
         self.entry_cs_shft.place(x=250, y=50)
         self.toggle_btn.place(x=420, y=47)
@@ -193,14 +179,14 @@ class CaesarDec():
 
         self.toggle_btn.set_command(self.on_toggle)
 
-        self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
+        self.entry_cs_shft.bind("<KeyPress>", lambda e: self.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
-        self.sctxt_cs_enc.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[!-~ \n\t]'))
+        self.sctxt_cs_enc.bind("<KeyPress>", lambda e: self.validate(e, r'[!-~ \n\t]'))
 
         self.button_cs_dec.configure(state="disabled")
         self.sctxt_cs_pln.configure(state="disabled")
 
-        self.btab.riddle_window.root.destroy()
+        self.riddle_window.root.destroy()
 
     def check_shift(self, *event):
         number = self.entry_cs_shft.get()

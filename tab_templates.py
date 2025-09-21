@@ -20,8 +20,14 @@ class BlankTab():
         self.tab_frame = Frame(self.parent.tabs_control)
         self.parent.tabs_control.add(self.tab_frame, text=name)
         self.parent.tabs_control.select(self.tab_frame)
+        self.btn_rerun = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="«",
+                                      font=("Arial", 11), command=self.rerun)
+        self.btn_undo = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="‹",
+                                     font=("Arial", 11), command=self.undo)
         self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x", font=('Arial', 11),
                               command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
+        self.btn_rerun.place(x=0, y=0)
+        self.btn_undo.place(x=27, y=0)
         self.btn_cls.pack(anchor='ne')
 
     def validate(self, event, regex_pattern):
@@ -30,3 +36,9 @@ class BlankTab():
         if event.char:
             if not re.match(regex_pattern, event.char):
                 return "break"
+
+    def rerun(self):
+        pass
+
+    def undo(self):
+        pass
