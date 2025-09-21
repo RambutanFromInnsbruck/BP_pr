@@ -34,11 +34,23 @@ class GrandPrixEnc():
 
         self.label_gp_nmbr.place(x=200, y=27)
         self.entry_gp_nmbr.place(x=190, y=50)
+        self.label_gp_dict.place(x=335, y=27)
+        self.text_gp_dict.place(x=330, y=50)
+        self.button_gp_dict.place(x=430, y=220)
+        self.label_gp_pln.place(x=170, y=250)
+        self.sctxt_gp_pln.place(x=75, y=273)
+        self.button_gp_enc.place(x=310, y=443)
+        self.label_gp_enc.place(x=440, y=250)
+        self.sctxt_gp_enc.place(x=350, y=273)
 
         self.entry_gp_nmbr.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
         self.entry_gp_nmbr.bind('<Return>', self.check_number)
-        self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
-        self.sctxt_gp_pln.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n]'))
+        self.text_gp_dict.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n\t]'))
+        self.sctxt_gp_pln.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[a-zA-Z \n\t]'))
+
+        self.button_gp_dict.configure(state="disabled")
+        self.button_gp_enc.configure(state="disabled")
+        self.sctxt_gp_enc.configure(state="disabled")
 
         self.btab.riddle_window.root.destroy()
 
@@ -50,9 +62,7 @@ class GrandPrixEnc():
             showerror("Warning!", "The number of words should be no more than 36 and no less than 2. Try again")
         else:
             self.entry_gp_nmbr.configure(state="disabled")
-            self.label_gp_dict.place(x=335, y=27)
-            self.text_gp_dict.place(x=330, y=50)
-            self.button_gp_dict.place(x=430, y=220)
+            self.button_gp_dict.configure(state="normal")
 
     def check_size(self):
         words = self.text_gp_dict.get("1.0", "end-1c").upper().split()
@@ -75,12 +85,9 @@ class GrandPrixEnc():
             self.button_gp_dict.configure(state="normal")
             access = False
         if access:
-            self.label_gp_pln.place(x=170, y=250)
-            self.sctxt_gp_pln.place(x=75, y=273)
-            self.button_gp_enc.place(x=310, y=443)
-            self.label_gp_enc.place(x=440, y=250)
-            self.sctxt_gp_enc.place(x=350, y=273)
+            self.vars.dict = {key: [] for key in self.vars.dict}
             self.create_dict(words, num)
+            self.button_gp_enc.configure(state="normal")
 
     def create_dict(self, w: list, n: int):
         for i in range(n):
@@ -88,6 +95,7 @@ class GrandPrixEnc():
                 self.vars.dict[str(w[i][j])].append(str(BASE[i % n]) + str(BASE[j % n]))
 
     def encode_grand(self):
+        self.sctxt_gp_enc.configure(state="normal")
         self.sctxt_gp_enc.delete("1.0", "end")
         txt = re.sub(r'[^A-Z]', '', self.sctxt_gp_pln.get("1.0", "end-1c").upper())
 
@@ -105,6 +113,7 @@ class GrandPrixEnc():
 
         self.sctxt_gp_enc.insert(INSERT, self.vars.result)
         self.vars.result = ''
+        self.sctxt_gp_enc.configure(state="disabled")
 
 
 class CaesarEnc():
@@ -131,11 +140,22 @@ class CaesarEnc():
 
         self.label_cs_shft.place(x=295, y=27)
         self.entry_cs_shft.place(x=250, y=50)
+        self.toggle_btn.place(x=420, y=47)
+        self.toggle_label.place(x=465, y=48)
+        self.label_cs_pln.place(x=170, y=100)
+        self.sctxt_cs_pln.place(x=75, y=123)
+        self.button_cs_enc.place(x=310, y=293)
+        self.label_cs_enc.place(x=440, y=100)
+        self.sctxt_cs_enc.place(x=350, y=123)
 
         self.toggle_btn.set_command(self.on_toggle)
 
         self.entry_cs_shft.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
+        self.sctxt_cs_pln.bind("<KeyPress>", lambda e: self.btab.validate(e, r'[!-~ \n\t]'))
+
+        self.button_cs_enc.configure(state="disabled")
+        self.sctxt_cs_enc.configure(state="disabled")
 
         self.btab.riddle_window.root.destroy()
 
@@ -147,19 +167,14 @@ class CaesarEnc():
             showerror("Warning!", "Shift should be at least 1. Try again")
         else:
             self.entry_cs_shft.configure(state="disabled")
-            self.toggle_btn.place(x=420, y=47)
-            self.toggle_label.place(x=465, y=48)
-            self.label_cs_pln.place(x=170, y=100)
-            self.sctxt_cs_pln.place(x=75, y=123)
-            self.button_cs_enc.place(x=310, y=293)
-            self.label_cs_enc.place(x=440, y=100)
-            self.sctxt_cs_enc.place(x=350, y=123)
+            self.button_cs_enc.configure(state="normal")
 
     def on_toggle(self):
         self.state = "ASCII" if self.toggle_btn.get_state() else "Alphabet"
         self.toggle_label.config(text=f"{self.state}")
 
     def encode_caesar(self):
+        self.sctxt_cs_enc.configure(state="normal")
         self.sctxt_cs_enc.delete("1.0", "end")
         txt = self.sctxt_cs_pln.get("1.0", "end-1c")
         shift = int(self.entry_cs_shft.get())
@@ -184,6 +199,7 @@ class CaesarEnc():
 
         self.sctxt_cs_enc.insert(INSERT, self.vars.result)
         self.vars.result = ''
+        self.sctxt_cs_enc.configure(state="disabled")
 
 class EncodeCipherWindow(DialogueWindow):
 
