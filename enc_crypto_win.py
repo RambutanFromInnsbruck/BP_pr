@@ -129,6 +129,8 @@ class GrandPrixEnc(BlankTab):
         self.sctxt_gp_enc.configure(state="disabled")
 
     def undo(self):
+        if self.entry_gp_nmbr['state'] == "normal":
+            self.rerun()
         if self.button_gp_dict['state'] == "normal":
             self.button_gp_dict.configure(state="disabled")
             self.entry_gp_nmbr.configure(state="normal")
@@ -237,6 +239,8 @@ class CaesarEnc(BlankTab):
         self.sctxt_cs_enc.configure(state="disabled")
 
     def undo(self):
+        if self.entry_cs_shft['state'] == "normal":
+            self.rerun()
         if self.button_cs_enc['state'] == "normal":
             self.button_cs_enc.configure(state="disabled")
             self.entry_cs_shft.configure(state="normal")
