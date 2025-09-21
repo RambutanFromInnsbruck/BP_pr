@@ -20,8 +20,8 @@ class BlankTab():
         self.tab_frame = Frame(self.parent.tabs_control)
         self.parent.tabs_control.add(self.tab_frame, text=name)
         self.parent.tabs_control.select(self.tab_frame)
-        self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x",
-                                     command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
+        self.btn_cls = Button(self.tab_frame, width=2, height=1, relief=GROOVE, text="x", font=('Arial', 11),
+                              command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
         self.btn_cls.pack(anchor='ne')
 
     def validate(self, event, regex_pattern):

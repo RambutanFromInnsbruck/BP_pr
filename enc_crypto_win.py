@@ -21,6 +21,10 @@ class GrandPrixEnc():
     def execute(self):
         self.btab.draw_tab_w_cls_btn("grand_enc")
 
+        self.button_gp_rerun = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="«",
+                                      font=("Arial", 11), command=self.rerun)
+        self.button_gp_undo = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="‹",
+                                     font=("Arial", 11), command=self.undo)
         self.label_gp_nmbr = Label(self.btab.tab_frame, text="Number of words:")
         self.entry_gp_nmbr = Entry(self.btab.tab_frame)
         self.label_gp_dict = Label(self.btab.tab_frame, text="List of words (Enter & space are separators):")
@@ -32,6 +36,8 @@ class GrandPrixEnc():
         self.label_gp_enc = Label(self.btab.tab_frame, text="Cipher text:")
         self.sctxt_gp_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
+        self.button_gp_rerun.place(x=0, y=0)
+        self.button_gp_undo.place(x=27, y=0)
         self.label_gp_nmbr.place(x=200, y=27)
         self.entry_gp_nmbr.place(x=190, y=50)
         self.label_gp_dict.place(x=335, y=27)
@@ -115,6 +121,32 @@ class GrandPrixEnc():
         self.vars.result = ''
         self.sctxt_gp_enc.configure(state="disabled")
 
+    def rerun(self):
+        self.entry_gp_nmbr.configure(state="normal")
+        self.text_gp_dict.configure(state="normal")
+        self.sctxt_gp_enc.configure(state="normal")
+
+        self.entry_gp_nmbr.delete(0, "end")
+        self.text_gp_dict.delete("1.0", "end")
+        self.sctxt_gp_pln.delete("1.0", "end")
+        self.sctxt_gp_enc.delete("1.0", "end")
+
+        self.button_gp_dict.configure(state="disabled")
+        self.button_gp_enc.configure(state="disabled")
+        self.sctxt_gp_enc.configure(state="disabled")
+
+    def undo(self):
+        if self.button_gp_dict['state'] == "normal":
+            self.button_gp_dict.configure(state="disabled")
+            self.entry_gp_nmbr.configure(state="normal")
+        if self.button_gp_enc['state'] == "normal":
+            self.button_gp_enc.configure(state="disabled")
+            self.text_gp_dict.configure(state="normal")
+            self.button_gp_dict.configure(state="normal")
+            self.sctxt_gp_enc.configure(state="normal")
+            self.sctxt_gp_enc.delete("1.0", "end")
+            self.sctxt_gp_enc.configure(state="disabled")
+
 
 class CaesarEnc():
     def __init__(self, parent):
@@ -128,6 +160,10 @@ class CaesarEnc():
     def execute(self):
         self.btab.draw_tab_w_cls_btn("caesar_enc")
 
+        self.button_cs_rerun = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="«",
+                                      font=("Arial", 11), command=self.rerun)
+        self.button_cs_undo = Button(self.btab.tab_frame, width=2, height=1, relief=GROOVE, text="‹",
+                                     font=("Arial", 11), command=self.undo)
         self.label_cs_shft = Label(self.btab.tab_frame, text="Shift:")
         self.entry_cs_shft = Entry(self.btab.tab_frame)
         self.toggle_btn = ToggleButton(self.btab.tab_frame, width=40, height=25)
@@ -138,6 +174,8 @@ class CaesarEnc():
         self.label_cs_enc = Label(self.btab.tab_frame, text="Cipher text:")
         self.sctxt_cs_enc = ScrolledText(self.btab.tab_frame, width=30, height=10)
 
+        self.button_cs_rerun.place(x=0, y=0)
+        self.button_cs_undo.place(x=27, y=0)
         self.label_cs_shft.place(x=295, y=27)
         self.entry_cs_shft.place(x=250, y=50)
         self.toggle_btn.place(x=420, y=47)
@@ -200,6 +238,25 @@ class CaesarEnc():
         self.sctxt_cs_enc.insert(INSERT, self.vars.result)
         self.vars.result = ''
         self.sctxt_cs_enc.configure(state="disabled")
+
+    def rerun(self):
+        self.entry_cs_shft.configure(state="normal")
+        self.sctxt_cs_enc.configure(state="normal")
+
+        self.entry_cs_shft.delete(0, "end")
+        self.sctxt_cs_pln.delete("1.0", "end")
+        self.sctxt_cs_enc.delete("1.0", "end")
+
+        self.button_cs_enc.configure(state="disabled")
+        self.sctxt_cs_enc.configure(state="disabled")
+
+    def undo(self):
+        if self.button_cs_enc['state'] == "normal":
+            self.button_cs_enc.configure(state="disabled")
+            self.entry_cs_shft.configure(state="normal")
+            self.sctxt_cs_enc.configure(state="normal")
+            self.sctxt_cs_enc.delete("1.0", "end")
+            self.sctxt_cs_enc.configure(state="disabled")
 
 class EncodeCipherWindow(DialogueWindow):
 
