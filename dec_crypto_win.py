@@ -166,6 +166,7 @@ class CaesarDec(BlankTab):
         self.label_cs_enc = Label(self.tab_frame, text="Cipher text:")
         self.sctxt_cs_enc = ScrolledText(self.tab_frame, width=30, height=10)
         self.button_cs_dec = Button(self.tab_frame, text="Decode", command=self.decode_caesar)
+        self.button_cs_brtfrc = Button(self.tab_frame, text="Bruteforce", command=self.bruteforce_caesar)
         self.label_cs_pln = Label(self.tab_frame, text="Plaintext:")
         self.sctxt_cs_pln = ScrolledText(self.tab_frame, width=30, height=10)
 
@@ -176,6 +177,7 @@ class CaesarDec(BlankTab):
         self.label_cs_enc.place(x=165, y=100)
         self.sctxt_cs_enc.place(x=75, y=123)
         self.button_cs_dec.place(x=310, y=293)
+        self.button_cs_brtfrc.place(x=302, y=323)
         self.label_cs_pln.place(x=445, y=100)
         self.sctxt_cs_pln.place(x=350, y=123)
 
@@ -199,17 +201,14 @@ class CaesarDec(BlankTab):
         else:
             self.entry_cs_shft.configure(state="disabled")
             self.button_cs_dec.configure(state="normal")
+            self.button_cs_brtfrc.configure(state="disabled")
 
     def on_toggle(self):
         self.state = "ASCII" if self.toggle_btn.get_state() else "Alphabet"
         self.toggle_label.config(text=f"{self.state}")
 
-    def decode_caesar(self):
-        self.sctxt_cs_pln.configure(state="normal")
-        self.sctxt_cs_pln.delete("1.0", "end")
-        txt = self.sctxt_cs_enc.get("1.0", "end-1c")
-        shift = int(self.entry_cs_shft.get())
-
+    def _cs_decrypt(self, txt: str, shift: int):
+        self.vars.result = ''
         if self.toggle_btn.get_state():  # ASCII
             for char in txt:
                 if START_CHAR_ASCII <= ord(char) <= LAST_CHAR_ASCII:
@@ -227,14 +226,102 @@ class CaesarDec(BlankTab):
                         ((ord(char) - shift - START_CHAR_ALPH_SMALL) % QUANTITY_ALPH_SMALL) + START_CHAR_ALPH_SMALL)
                 else:
                     self.vars.result += char
+        return self.vars.result
 
-        self.sctxt_cs_pln.insert(INSERT, self.vars.result)
-        self.vars.result = ''
+    def _cs_analyze(self, txt: str):
+        capital_txt = txt.upper()
+        words = capital_txt.split()
+
+        # Counting the most common words
+        common_word_count = 0
+        for word in words:
+            clean_word = re.sub(r'[^A-Z]', '', word)
+            if clean_word in self.vars.common_words:
+                common_word_count += 1
+
+        # Checking for the presence of vowels
+        vowel_count = 0
+        letter_count = 0
+        for char in capital_txt:
+            if char.isalpha():
+                letter_count += 1
+                if char in VOWEL_LETTERS:
+                    vowel_count += 1
+        vowel_ratio = vowel_count / letter_count if letter_count > 0 else 0
+
+        # Frequency analysis
+        freq_score = 0
+        if letter_count > 0:
+            freq_dict = {}
+            for char in capital_txt:
+                if char.isalpha():
+                    freq_dict[char] = freq_dict.get(char, 0) + 1
+            for char in freq_dict:
+                observed_freq = freq_dict[char] / letter_count * 100
+                expected_freq = self.vars.english_freq[char]
+                freq_score += (observed_freq - expected_freq) ** 2
+
+        # Checking for unusual letter combinations
+        unusual_combinations = 0
+        for i in range(len(capital_txt) - 1):
+            if capital_txt[i].isalpha() and capital_txt[i + 1].isalpha():
+                bigram = capital_txt[i:i + 2]
+                if bigram in self.vars.rare_bigram:
+                    unusual_combinations += 1
+
+        # Combined assessment with different weights
+        total_score = (
+                -common_word_count * 100 +
+                freq_score * 0.5 +
+                abs(vowel_ratio - 0.4) * 50 +
+                unusual_combinations * 10
+        )
+
+        return total_score
+
+    def decode_caesar(self):
+        self.sctxt_cs_pln.configure(state="normal")
+        self.sctxt_cs_pln.delete("1.0", "end")
+        txt = self.sctxt_cs_enc.get("1.0", "end-1c")
+        shift = int(self.entry_cs_shft.get())
+        plane_text = self._cs_decrypt(txt, shift)
+        self.sctxt_cs_pln.insert(INSERT, plane_text)
         self.entry_cs_shft.configure(state="disabled")
+
+    def bruteforce_caesar(self):
+        self.entry_cs_shft.delete(0, "end")
+        self.entry_cs_shft.configure(state="disabled")
+        self.sctxt_cs_pln.configure(state="normal")
+        self.sctxt_cs_pln.delete("1.0", "end")
+        txt = self.sctxt_cs_enc.get("1.0", "end-1c")
+
+        if txt == '':
+            self.sctxt_cs_pln.configure(state="disabled")
+
+        if self.toggle_btn.get_state():  # ASCII
+            max_shift = QUANTITY_ASCII
+        else: # Alphabet
+            max_shift = QUANTITY_ALPH_SMALL
+
+        results = []
+        for shift in range(1, max_shift):
+            plane_text = self._cs_decrypt(txt, shift)
+            score = self._cs_analyze(plane_text)
+            results.append((shift, score, plane_text))
+
+        if self.toggle_btn.get_state() == False: # Alphabet
+            results.sort(key=lambda x: x[1])
+
+        for shift, score, plane_text in results:
+            self.sctxt_cs_pln.insert(INSERT, f'Possible shift: {shift}\n\n')
+            self.sctxt_cs_pln.insert(INSERT, f'{plane_text}\n\n')
+
+        self.sctxt_cs_pln.configure(state="disabled")
 
     def rerun(self):
         self.entry_cs_shft.configure(state="normal")
         self.sctxt_cs_pln.configure(state="normal")
+        self.button_cs_brtfrc.configure(state="normal")
 
         self.entry_cs_shft.delete(0, "end")
         self.sctxt_cs_enc.delete("1.0", "end")
@@ -246,9 +333,10 @@ class CaesarDec(BlankTab):
     def undo(self):
         if self.entry_cs_shft['state'] == "normal":
             self.rerun()
-        if self.button_cs_dec['state'] == "normal":
+        if self.button_cs_dec['state'] == "normal" or self.button_cs_brtfrc['state'] == "normal":
             self.button_cs_dec.configure(state="disabled")
             self.entry_cs_shft.configure(state="normal")
+            self.button_cs_brtfrc.configure(state="normal")
             self.sctxt_cs_pln.configure(state="normal")
             self.sctxt_cs_pln.delete("1.0", "end")
             self.sctxt_cs_pln.configure(state="disabled")
