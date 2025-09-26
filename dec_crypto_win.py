@@ -271,10 +271,10 @@ class CaesarDec(BlankTab):
 
         # Combined assessment with different weights
         total_score = (
-                -common_word_count * 100 +
-                freq_score * 0.5 +
-                abs(vowel_ratio - 0.4) * 50 +
-                unusual_combinations * 10
+                -common_word_count * COMMON_WORD_COEFFICIENT +
+                freq_score * FREQ_COEFFICIENT +
+                abs(vowel_ratio - EXPECTED_VOWEL_RATIO) * VOWEL_COEFFICIENT +
+                unusual_combinations * UNUSUAL_BIGRAM_COEFFICIENT
         )
 
         return total_score
