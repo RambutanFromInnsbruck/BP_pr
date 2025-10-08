@@ -2,25 +2,19 @@ from tkinter import *
 from tkinter import ttk
 import json
 import tkinter as tk
+from window_templates import ChildWindow
 
 
-class HelpWindow():
+class HelpWindow(ChildWindow):
     def __init__(self, parent):
-        self.root = Toplevel(parent)
-        self.parent = parent
-        self.init()
-
-    def init(self):
-        self.root.title("Help")
-        self.root.geometry("800x600")
-        self.draw_widgets()
+        super().__init__(parent, "Help", 800, 600)
 
     def draw_widgets(self):
         main_frame = Frame(self.root)
         srch_frame = Frame(main_frame)
         self.srch_label = Label(srch_frame, text="Search:")
         self.srch_entry = Entry(srch_frame, width=40)
-        paned_window = PanedWindow(main_frame, orient=tk.HORIZONTAL)
+        paned_window = PanedWindow(main_frame, orient="horizontal")
         self.tree_frame = Frame(paned_window)
         self.tree = ttk.Treeview(self.tree_frame, show="tree")
         self.tree_scroll = Scrollbar(self.tree_frame, orient="vertical", command=self.tree.yview)
@@ -28,15 +22,15 @@ class HelpWindow():
         self.content_text = Text(self.content_frame, wrap="word", state="disabled")
         content_scroll = Scrollbar(self.content_frame, command=self.content_text.yview)
 
-        main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
-        srch_frame.pack(fill=tk.X, pady=5)
-        self.srch_label.pack(side=tk.LEFT)
-        self.srch_entry.pack(side=tk.LEFT, padx=5)
-        paned_window.pack(fill=tk.BOTH, expand=True)
-        self.tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
-        content_scroll.pack(side=tk.RIGHT, fill=tk.Y)
-        self.content_text.pack(fill=tk.BOTH, expand=True)
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        srch_frame.pack(fill="x", pady=5)
+        self.srch_label.pack(side="left")
+        self.srch_entry.pack(side="left", padx=5)
+        paned_window.pack(fill="both", expand=True)
+        self.tree_scroll.pack(side="right", fill="y")
+        self.tree.pack(side="left", fill="both", expand=True)
+        content_scroll.pack(side="right", fill="y")
+        self.content_text.pack(fill="both", expand=True)
 
         self.srch_entry.bind("<KeyRelease>", self.search_content)
         self.tree.bind("<<TreeviewSelect>>", self.display_content)

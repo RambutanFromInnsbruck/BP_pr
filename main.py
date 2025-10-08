@@ -18,6 +18,7 @@ class Window:
         self.root.bind('<F1>', self.help)
         self.root.bind('<F11>', self.fullscreen)
         self.root.bind("<Escape>", self._close)
+        self.root.bind('<Configure>', self.on_window_move)
 
     def run(self):
         self.draw_menu()
@@ -59,6 +60,11 @@ class Window:
 
     def help(self, *event):
         HelpWindow(self.root)
+
+    def on_window_move(self, event):
+        if event.widget == self.root:
+            self.current_x = event.x
+            self.current_y = event.y
 
     def fullscreen(self, event):
         if self.root.attributes('-fullscreen'):

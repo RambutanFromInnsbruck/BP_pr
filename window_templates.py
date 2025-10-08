@@ -3,16 +3,42 @@ from tkinter.messagebox import showinfo
 from variables import *
 from custom_widgets import AutocompleteEntry
 
-class DialogueWindow():
+
+class ChildWindow():
+    def __init__(self, parent, title, width, height):
+        self.root = Toplevel(parent)
+        self.parent = parent
+        self.init(title, width, height)
+        self.position_child_window()
+
+    def init(self, title, width, height):
+        self.root.title(title)
+        self.root.geometry(f"{width}x{height}")
+        self.draw_widgets()
+
+    def position_child_window(self):
+        self.root.update_idletasks()
+
+        child_width = self.root.winfo_width()
+        child_height = self.root.winfo_height()
+
+        main_width = self.parent.winfo_width()
+        main_height = self.parent.winfo_height()
+        current_x = self.parent.winfo_x()
+        current_y = self.parent.winfo_y()
+
+        x = current_x + (main_width - child_width) // 2
+        y = current_y + (main_height - child_height) // 2
+
+        self.root.geometry(f"+{x}+{y}")
+
+class DialogueWindow(ChildWindow):
     CIPHER_TYPES = []
 
     def __init__(self, parent, title):
-        self.root = Toplevel(parent)
-        self.parent = parent
         self.vars = Vars()
-        self.root.title(title)
-        self.root.geometry("300x400")
-        self.draw_widgets()
+        super().__init__(parent, title, 300, 400)
+
         self.grab_focus()
 
     def draw_widgets(self):
