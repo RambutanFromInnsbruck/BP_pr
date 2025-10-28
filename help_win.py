@@ -1,7 +1,6 @@
 from tkinter import *
 from tkinter import ttk
 import json
-import tkinter as tk
 from window_templates import ChildWindow
 
 
@@ -73,16 +72,16 @@ class HelpWindow(ChildWindow):
 
         content = self.tree.item(selected, "values")
         self.content_text.config(state="normal")
-        self.content_text.delete(1.0, tk.END)
+        self.content_text.delete(1.0, "end")
 
         if content:
-            self.content_text.insert(tk.END, content[0])
+            self.content_text.insert("end", content[0])
         self.content_text.config(state="disabled")
 
     def search_content(self, event):
         query = self.srch_entry.get().lower()
 
-        self.content_text.tag_remove("found", 1.0, tk.END)
+        self.content_text.tag_remove("found", 1.0, "end")
         self.content_text.config(state="normal")
 
         if not query:
@@ -90,7 +89,7 @@ class HelpWindow(ChildWindow):
 
         start_index = "1.0"
         while True:
-            start_index = self.content_text.search(query, start_index, stopindex=tk.END, nocase=True)
+            start_index = self.content_text.search(query, start_index, stopindex="end", nocase=True)
             if not start_index:
                 break
 
