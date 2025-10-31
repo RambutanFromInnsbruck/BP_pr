@@ -33,7 +33,7 @@ class ChildWindow():
         self.root.geometry(f"+{x}+{y}")
 
 class DialogueWindow(ChildWindow):
-    CIPHER_TYPES = []
+    CONCEALMENT_TYPES = []
 
     def __init__(self, parent, title):
         self.vars = Vars()
@@ -46,9 +46,9 @@ class DialogueWindow(ChildWindow):
         self.label = Label(self.root, text="Choose result:")
         self.choise = IntVar()
 
-        self.cipher_instances = []
+        self.concealment_instances = []
 
-        search_list = [name for _, name in self.CIPHER_TYPES]
+        search_list = [name for _, name in self.CONCEALMENT_TYPES]
         self.search_entry.set_completion_list(search_list)
 
         self.search_entry.pack()
@@ -56,19 +56,19 @@ class DialogueWindow(ChildWindow):
 
         self.search_entry.bind('<Return>', self.execute_from_srch)
 
-        for idx, (cipher_cls, cipher_name) in enumerate(self.CIPHER_TYPES):
-            cipher_obj = cipher_cls(self.parent)
-            cipher_obj.set_cipher_window(self)
+        for idx, (concealment_cls, concealment_name) in enumerate(self.CONCEALMENT_TYPES):
+            concealment_obj = concealment_cls(self.parent)
+            concealment_obj.set_riddle_window(self)
 
             Radiobutton(
                 self.root,
-                text=cipher_name,
+                text=concealment_name,
                 variable=self.choise,
                 value=idx,
-                command=cipher_obj.execute
+                command=concealment_obj.execute
             ).pack()
 
-            self.cipher_instances.append(cipher_obj)
+            self.concealment_instances.append(concealment_obj)
 
     def grab_focus(self):
         self.root.grab_set()
@@ -77,10 +77,10 @@ class DialogueWindow(ChildWindow):
 
     def execute_from_srch(self, *event):
         entered_name = self.search_entry.get()
-        for idx, (cipher_cls, cipher_name) in enumerate(self.CIPHER_TYPES):
-            if cipher_name == entered_name:
-                cipher_obj = self.cipher_instances[idx]
-                cipher_obj.execute()
+        for idx, (concealment_cls, concealment_name) in enumerate(self.CONCEALMENT_TYPES):
+            if concealment_name == entered_name:
+                concealment_obj = self.concealment_instances[idx]
+                concealment_obj.execute()
 
                 break
         else:

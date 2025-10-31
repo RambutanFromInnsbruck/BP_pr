@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.messagebox import askokcancel
 from dec_crypto_win import DecodeCipherWindow
 from enc_crypto_win import EncodeCipherWindow
+from enc_stego_win import EncodeStegoWindow
 from custom_widgets import CustomNotebook
 from help_win import HelpWindow
 
@@ -53,7 +54,7 @@ class Window:
         DecodeCipherWindow(self.root)
 
     def dialogue_stegoencode_window(self):
-        print("Stego was clicked")
+        EncodeStegoWindow(self.root)
 
     def dialogue_stegodecode_window(self):
         print("Stego was clicked")

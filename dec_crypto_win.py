@@ -13,9 +13,6 @@ class GrandPrixDec(BlankTab):
         super().__init__(parent)
         self.vars = Vars()
 
-    def set_cipher_window(self, cipher_window):
-        self.set_riddle_window(cipher_window)
-
     def execute(self):
         self.draw_tab_w_cls_btn("grand_dec")
 
@@ -152,9 +149,6 @@ class CaesarDec(BlankTab):
     def __init__(self, parent):
         super().__init__(parent)
         self.vars = Vars()
-
-    def set_cipher_window(self, cipher_window):
-        self.set_riddle_window(cipher_window)
 
     def execute(self):
         self.draw_tab_w_cls_btn("caesar_dec")
@@ -343,7 +337,7 @@ class CaesarDec(BlankTab):
 
 
 class DecodeCipherWindow(DialogueWindow):
-    CIPHER_TYPES = [
+    CONCEALMENT_TYPES = [
         (GrandPrixDec, "Grand Prix Cipher"),
         (CaesarDec, "Caesar Cipher")
     ]

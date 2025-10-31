@@ -14,9 +14,6 @@ class GrandPrixEnc(BlankTab):
         super().__init__(parent)
         self.vars = Vars()
 
-    def set_cipher_window(self, cypher_window):
-        self.set_riddle_window(cypher_window)
-
     def execute(self):
         self.draw_tab_w_cls_btn("grand_enc")
 
@@ -148,9 +145,6 @@ class CaesarEnc(BlankTab):
         super().__init__(parent)
         self.vars = Vars()
 
-    def set_cipher_window(self, cipher_window):
-        self.set_riddle_window(cipher_window)
-
     def execute(self):
         self.draw_tab_w_cls_btn("caesar_enc")
 
@@ -249,8 +243,7 @@ class CaesarEnc(BlankTab):
             self.sctxt_cs_enc.configure(state="disabled")
 
 class EncodeCipherWindow(DialogueWindow):
-
-    CIPHER_TYPES = [
+    CONCEALMENT_TYPES = [
         (GrandPrixEnc, "Grand Prix Cipher"),
         (CaesarEnc, "Caesar Cipher")
     ]
