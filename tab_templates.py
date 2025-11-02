@@ -28,7 +28,7 @@ class BlankTab():
                               command=lambda: self.parent.tabs_control.forget(self.parent.tabs_control.select()))
         self.btn_rerun.place(x=0, y=0)
         self.btn_undo.place(x=27, y=0)
-        self.btn_cls.pack(anchor='ne')
+        self.btn_cls.place(relx=1.0, rely=0.0, anchor='ne')
 
     def validate(self, event, regex_pattern):
         if event.keysym in ('BackSpace', 'Delete', 'Return', 'Escape'):

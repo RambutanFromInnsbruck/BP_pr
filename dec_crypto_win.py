@@ -20,12 +20,12 @@ class GrandPrixDec(BlankTab):
         self.entry_gp_nmbr = Entry(self.tab_frame)
         self.label_gp_dict = Label(self.tab_frame, text="List of words (Enter & space are separators):")
         self.text_gp_dict = Text(self.tab_frame, width=30, height=10)
-        self.button_gp_dict = Button(self.tab_frame, text="Input", command=self.check_size)
+        self.button_gp_dict = Button(self.tab_frame, text="Input", command=self.check_size, state="disabled")
         self.label_gp_enc = Label(self.tab_frame, text="Cipher text (Enter & space are separators):")
         self.sctxt_gp_enc = ScrolledText(self.tab_frame, width=30, height=10)
-        self.button_gp_dec = Button(self.tab_frame, text="Decode", command=self.decode_grand)
+        self.button_gp_dec = Button(self.tab_frame, text="Decode", command=self.decode_grand, state="disabled")
         self.label_gp_pln = Label(self.tab_frame, text="Plain text:")
-        self.sctxt_gp_pln = ScrolledText(self.tab_frame, width=30, height=10)
+        self.sctxt_gp_pln = ScrolledText(self.tab_frame, width=30, height=10, state="disabled")
 
         self.label_gp_nmbr.place(x=200, y=27)
         self.entry_gp_nmbr.place(x=190, y=50)
@@ -42,10 +42,6 @@ class GrandPrixDec(BlankTab):
         self.entry_gp_nmbr.bind('<Return>', self.check_number)
         self.text_gp_dict.bind("<KeyPress>", lambda e: self.validate(e, r'[a-zA-Z \n\t]'))
         self.sctxt_gp_enc.bind("<KeyPress>", lambda e: self.validate(e, r'[a-z0-9 \n\t]'))
-
-        self.button_gp_dict.configure(state="disabled")
-        self.button_gp_dec.configure(state="disabled")
-        self.sctxt_gp_pln.configure(state="disabled")
 
         self.riddle_window.root.destroy()
 
@@ -159,10 +155,10 @@ class CaesarDec(BlankTab):
         self.toggle_label = Label(self.tab_frame, text="Alphabet")
         self.label_cs_enc = Label(self.tab_frame, text="Cipher text:")
         self.sctxt_cs_enc = ScrolledText(self.tab_frame, width=30, height=10)
-        self.button_cs_dec = Button(self.tab_frame, text="Decode", command=self.decode_caesar)
+        self.button_cs_dec = Button(self.tab_frame, text="Decode", command=self.decode_caesar, state="disabled")
         self.button_cs_brtfrc = Button(self.tab_frame, text="Bruteforce", command=self.bruteforce_caesar)
         self.label_cs_pln = Label(self.tab_frame, text="Plaintext:")
-        self.sctxt_cs_pln = ScrolledText(self.tab_frame, width=30, height=10)
+        self.sctxt_cs_pln = ScrolledText(self.tab_frame, width=30, height=10, state="disabled")
 
         self.label_cs_shft.place(x=295, y=27)
         self.entry_cs_shft.place(x=250, y=50)
@@ -180,9 +176,6 @@ class CaesarDec(BlankTab):
         self.entry_cs_shft.bind("<KeyPress>", lambda e: self.validate(e, r'[0-9]+'))
         self.entry_cs_shft.bind('<Return>', self.check_shift)
         self.sctxt_cs_enc.bind("<KeyPress>", lambda e: self.validate(e, r'[!-~ \n\t]'))
-
-        self.button_cs_dec.configure(state="disabled")
-        self.sctxt_cs_pln.configure(state="disabled")
 
         self.riddle_window.root.destroy()
 

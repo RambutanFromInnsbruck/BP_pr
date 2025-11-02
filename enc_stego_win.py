@@ -1,11 +1,11 @@
-from  tkinter import *
+from tkinter import *
 from tkinter import filedialog, messagebox
 import os
 from window_templates import DialogueWindow
 from tab_templates import BlankTab
 
 
-class RarJpeg(BlankTab):
+class RarJpegEnc(BlankTab):
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -19,13 +19,13 @@ class RarJpeg(BlankTab):
         self.draw_tab_w_cls_btn("rarjpeg_enc")
 
         self.label_archive = Label(self.tab_frame, text="Archive location (.rar):")
-        self.entry_archive = Entry(self.tab_frame, width=50)
+        self.entry_archive = Entry(self.tab_frame, width=50, state="disabled")
         self.btn_archive = Button(self.tab_frame, text="Search", command=self.select_archive)
         self.label_img = Label(self.tab_frame, text="Image location (.jpeg):")
-        self.entry_img = Entry(self.tab_frame, width=50)
+        self.entry_img = Entry(self.tab_frame, width=50, state="disabled")
         self.btn_img = Button(self.tab_frame, text="Search", command=self.select_image)
         self.label_status = Label(self.tab_frame, text="Status: Select files", fg="blue")
-        self.btn_create = Button(self.tab_frame, text="Create", command=self.create_polyglot)
+        self.btn_create = Button(self.tab_frame, text="Create", command=self.create_polyglot, state="disabled")
 
         self.label_archive.place(x=50, y=58)
         self.entry_archive.place(x=185, y=60)
@@ -35,9 +35,6 @@ class RarJpeg(BlankTab):
         self.btn_img.place(x=505, y=96)
         self.label_status.place(x=185, y=140)
         self.btn_create.place(x=310, y=170)
-
-        self.entry_archive.configure(state="disabled")
-        self.entry_img.configure(state="disabled")
 
         self.riddle_window.root.destroy()
 
@@ -107,18 +104,18 @@ class RarJpeg(BlankTab):
 
         if archive_loaded and image_loaded:
             self.label_status.config(text="Status: Both files loaded into memory. Ready to create", fg="green")
+            self.btn_create.config(state="normal")
         elif archive_loaded:
             self.label_status.config(text="Status: Archive uploaded. Select an image", fg="orange")
+            self.btn_create.config(state="disabled")
         elif image_loaded:
             self.label_status.config(text="Status: Image uploaded. Select an archive", fg="orange")
+            self.btn_create.config(state="disabled")
         else:
             self.label_status.config(text="Status: Select files", fg="blue")
+            self.btn_create.config(state="disabled")
 
     def create_polyglot(self):
-        if self.archive_data is None or self.image_data is None:
-            messagebox.showerror("Error", "Select an archive and image!")
-            return
-
         output_path = filedialog.asksaveasfilename(
             defaultextension=".jpg",
             filetypes=[("JPEG files", "*.jpg"), ("All files", "*.*")]
@@ -135,7 +132,7 @@ class RarJpeg(BlankTab):
             messagebox.showinfo("Success", "File created successfully!")
 
         except Exception as e:
-            messagebox.showerror("Error", f"Error occurred: {str(e)}")
+            messagebox.showerror("Error", f"Failed file creation: {str(e)}")
 
     def rerun(self):
         self.archive_data = None
@@ -178,7 +175,7 @@ class RarJpeg(BlankTab):
 
 class EncodeStegoWindow(DialogueWindow):
     CONCEALMENT_TYPES = [
-        (RarJpeg, "Rar+Jpeg"),
+        (RarJpegEnc, "Rar+Jpeg"),
     ]
 
     def __init__(self, parent):
